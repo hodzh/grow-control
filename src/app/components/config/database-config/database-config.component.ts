@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
@@ -7,7 +7,7 @@ import {SelectionModel} from '@angular/cdk/collections';
   styleUrls: ['./database-config.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatabaseConfigComponent implements OnInit {
+export class DatabaseConfigComponent {
   @Input() sizes;
   @Input() update;
   @Output() updateSizes = new EventEmitter<void>();
@@ -15,9 +15,6 @@ export class DatabaseConfigComponent implements OnInit {
   selection = new SelectionModel<string>(true);
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   onClear() {
     this.clear.emit(this.selection.selected);

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'app-settings',
@@ -6,7 +6,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   links = [
     {
       route: ['/', 'settings', 'program'],
@@ -51,8 +51,5 @@ export class SettingsComponent implements OnInit {
   ];
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 }

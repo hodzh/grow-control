@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { DayTime } from '../../auto/struct';
 
 @Component({
@@ -7,16 +7,13 @@ import { DayTime } from '../../auto/struct';
   styleUrls: ['./day-time.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DayTimeComponent implements OnInit {
+export class DayTimeComponent {
   @Input() time: DayTime;
   @Output() timeChange = new EventEmitter<DayTime>();
   hours = new Array(24).fill(0).map((v, i) => i);
   minutes = new Array(60).fill(0).map((v, i) => i);
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

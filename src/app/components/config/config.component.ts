@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import {SelectBtDeviceService} from './select-bt-device/select-bt-device.service';
 import {
   ActionConfigChange, ActionConfigClearDatabase,
   ActionConfigSetDevice,
@@ -16,8 +15,8 @@ import {
 } from '../../store/config/config.reducer';
 import {from, Observable} from 'rxjs';
 import {AccessControlConfig} from '../../model/access-control-config';
-import {DEVICE_CONNECT} from "../../platform/device-connect";
-import {ConnectService} from "../../services/connect/connect.service";
+import {DEVICE_CONNECT} from '../../platform/device-connect';
+import {ConnectService} from '../../services/connect/connect.service';
 
 @Component({
   selector: 'app-config',

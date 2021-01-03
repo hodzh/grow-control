@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Pump} from '../../../../auto/struct';
 
 @Component({
@@ -7,16 +7,13 @@ import {Pump} from '../../../../auto/struct';
   styleUrls: ['./pump.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PumpComponent implements OnInit {
+export class PumpComponent {
   @Input() pump: Pump;
   @Output() pumpChange = new EventEmitter<Pump>();
   @Input() name: string;
   @Output() nameChange = new EventEmitter<string>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

@@ -36,7 +36,7 @@ async function init() {
 
 async function writeTs(sourceName: string, content: Statement[]) {
   const sourcePath = join(outDir, sourceName) + ext;
-  console.debug('write', sourcePath);
+  console.log('write', sourcePath);
   const sourceFile = factory.createSourceFile(
     content,
     factory.createToken(SyntaxKind.EndOfFileToken),

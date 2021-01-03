@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {SelectBtDeviceComponent} from './select-bt-device.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ConnectService} from '../../../services/connect/connect.service';
-import {MatListModule} from '@angular/material/list';
+import {MatListModule} from '@angular/material/list'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 describe('SelectBtDeviceComponent', () => {
@@ -18,7 +18,7 @@ describe('SelectBtDeviceComponent', () => {
           provide: ConnectService,
           useValue: {
             discover() {
-              return new Promise((resolve, reject) => {
+              return new Promise(() => {
               });
             },
           },

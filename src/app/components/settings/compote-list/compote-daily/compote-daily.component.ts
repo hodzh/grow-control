@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {CompoteDaily} from '../../../../auto/struct';
 import {Dose} from '../../../../auto/struct';
 
@@ -8,15 +8,12 @@ import {Dose} from '../../../../auto/struct';
   styleUrls: ['./compote-daily.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompoteDailyComponent implements OnInit {
+export class CompoteDailyComponent {
   @Input() compoteDaily: CompoteDaily;
   @Output() compoteDailyChange = new EventEmitter<CompoteDaily>();
   @Input() soils: Dose[];
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {
@@ -29,7 +26,7 @@ export class CompoteDailyComponent implements OnInit {
     this.onChange({dose});
   }
 
-  trackByIndex(index, item) {
+  trackByIndex(index) {
     return index;
   }
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Dose} from '../../../../auto/struct';
 
 @Component({
@@ -7,16 +7,13 @@ import {Dose} from '../../../../auto/struct';
   styleUrls: ['./dose.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DoseComponent implements OnInit {
+export class DoseComponent {
   @Input() dose: Dose;
   @Output() doseChange = new EventEmitter<Dose>();
   @Input() name: string;
   @Output() nameChange = new EventEmitter<string>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

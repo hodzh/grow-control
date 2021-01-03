@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-pin-select',
@@ -6,16 +6,13 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
   styleUrls: ['./pin-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PinSelectComponent implements OnInit {
+export class PinSelectComponent {
   @Input() pins: number[];
   @Input() allPins: number[];
   @Input() title: string;
   @Output() pinChange = new EventEmitter<{ index: number, value: number }>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(index: number, value: number) {

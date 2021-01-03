@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {DeviceMonitor} from '../../../store/config/config.reducer';
 
 @Component({
@@ -7,14 +7,11 @@ import {DeviceMonitor} from '../../../store/config/config.reducer';
   styleUrls: ['./device-monitor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DeviceMonitorComponent implements OnInit {
+export class DeviceMonitorComponent {
   @Input() config: DeviceMonitor;
   @Output() configChange = new EventEmitter<DeviceMonitor>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

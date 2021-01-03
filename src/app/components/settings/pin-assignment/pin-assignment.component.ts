@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {
   ActionSettingsChangePinAssignment,
   ActionSettingsLoadPinAssignment,
-  selectorPinAssignment, selectorPinDoseMixers,
+  selectorPinDoseMixers,
   selectorPinDoses,
   selectorPinFlowSensors, selectorPinLevelSensors,
   selectorPinMixers,
@@ -11,7 +11,6 @@ import {
   selectorPinValves,
 } from '../../../store/settings/settings.reducer';
 import { Observable, Subject } from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import { deviceInfo, getAllPins } from '../../../model/device-info';
 import { devicePartTypeName } from '../../../model/device-parts';
 
@@ -40,7 +39,6 @@ export class PinAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<any>,
-    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 

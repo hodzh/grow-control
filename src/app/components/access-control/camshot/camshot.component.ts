@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {DbAccessControlCamshotValue, DbService} from '../../../services/storage/db.service';
 import {switchMap, startWith} from 'rxjs/operators';
 import {BehaviorSubject, from} from 'rxjs';
@@ -10,7 +10,7 @@ import {CamshotSliderService} from '../camshot-slider/camshot-slider.service';
   styleUrls: ['./camshot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CamshotComponent implements OnInit {
+export class CamshotComponent {
   @Input() set key(value: number) {
     this.keySubject.next(value);
   }
@@ -32,9 +32,6 @@ export class CamshotComponent implements OnInit {
         this.camshot = camshot;
         cd.markForCheck();
       });
-  }
-
-  ngOnInit() {
   }
 
   onClick() {

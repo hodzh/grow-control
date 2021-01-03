@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActionConnectRequest } from '../../store/connect/connect.reducer';
 import { DeviceRequestType } from '../../model/device-request-type';
 import { Store } from '@ngrx/store';
@@ -12,15 +12,12 @@ import { EMPTY } from 'rxjs';
   templateUrl: './manual-control.component.html',
   styleUrls: ['./manual-control.component.scss'],
 })
-export class ManualControlComponent implements OnInit {
+export class ManualControlComponent {
 
   constructor(
     private readonly store: Store<any>,
     private readonly selectIndexService: SelectIndexService,
   ) {
-  }
-
-  ngOnInit() {
   }
 
   onFertigate() {

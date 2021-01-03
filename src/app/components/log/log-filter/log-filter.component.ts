@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {
   ActionLogResetFilter,
   ActionLogSetFilter,
@@ -18,7 +18,7 @@ import {MatDialogRef} from '@angular/material/dialog';
   styleUrls: ['./log-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogFilterComponent implements OnInit {
+export class LogFilterComponent {
   filter$: Observable<LogFilter[]>;
   private initialFilter: LogFilter[];
 
@@ -29,9 +29,6 @@ export class LogFilterComponent implements OnInit {
     this.filter$ = this.store.pipe(select(selectorLogFilter));
     this.store.pipe(select(selectorLogFilter), first())
       .subscribe(filter => this.initialFilter = filter);
-  }
-
-  ngOnInit() {
   }
 
   onSelect(line) {
@@ -55,7 +52,7 @@ export class LogFilterComponent implements OnInit {
     setTimeout(() => this.store.dispatch(new ActionLogSetFilter(this.initialFilter)));
   }
 
-  trackBy(index, item) {
+  trackBy(index) {
     return index;
   }
 }

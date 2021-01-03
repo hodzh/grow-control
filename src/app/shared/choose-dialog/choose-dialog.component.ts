@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface ChooseDialogParams {
@@ -12,7 +12,7 @@ export interface ChooseDialogParams {
   styleUrls: ['./choose-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChooseDialogComponent implements OnInit {
+export class ChooseDialogComponent {
   value: any;
 
   constructor(
@@ -23,9 +23,6 @@ export class ChooseDialogComponent implements OnInit {
 
   get options(): { title: string; value: any; }[] {
     return this.data?.options;
-  }
-
-  ngOnInit() {
   }
 
   onCancel() {

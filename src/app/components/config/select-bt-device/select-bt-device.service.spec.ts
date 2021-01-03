@@ -1,8 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {SelectBtDeviceService} from './select-bt-device.service';
 import {MatDialog} from '@angular/material/dialog';
-import {ConnectService} from '../../../services/connect/connect.service';
-import { DEVICE_CONNECT } from "../../../platform/device-connect";
+import { DEVICE_CONNECT } from '../../../platform/device-connect';
 
 describe('SelectBtDeviceService', () => {
   beforeEach(() =>
@@ -12,7 +11,7 @@ describe('SelectBtDeviceService', () => {
           provide: DEVICE_CONNECT,
           useValue: {
             discover() {
-              return new Promise((resolve, reject) => {
+              return new Promise(() => {
               });
             },
           },

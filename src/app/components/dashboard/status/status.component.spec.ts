@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {StatusComponent} from './status.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('StatusComponent', () => {
   let component: StatusComponent;
@@ -10,6 +11,9 @@ describe('StatusComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [StatusComponent],
+      providers: [
+        provideMockStore({ initialState: {} }),
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();

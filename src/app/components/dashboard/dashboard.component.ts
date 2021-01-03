@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, ViewChild} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {
@@ -23,7 +23,7 @@ import {takeUntil} from 'rxjs/operators';
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnDestroy {
   time$: Observable<DateTime>;
   temp$: Observable<number>;
   minTemp$: Observable<number>;
@@ -50,9 +50,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         this.chart.add(action.payload);
       });
-  }
-
-  ngOnInit() {
   }
 
   ngOnDestroy() {

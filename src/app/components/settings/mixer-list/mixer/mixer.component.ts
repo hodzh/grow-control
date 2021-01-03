@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Mixer} from '../../../../auto/struct';
 
 @Component({
@@ -7,16 +7,13 @@ import {Mixer} from '../../../../auto/struct';
   styleUrls: ['./mixer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MixerComponent implements OnInit {
+export class MixerComponent {
   @Input() mixer: Mixer;
   @Output() mixerChange = new EventEmitter<Mixer>();
   @Input() name: string;
   @Output() nameChange = new EventEmitter<string>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

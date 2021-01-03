@@ -501,10 +501,10 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 29,
-                  "month": 11,
-                  "wday": 2,
-                  "year": 50,
+                  "day": 4,
+                  "month": 0,
+                  "wday": 1,
+                  "year": 51,
                 },
                 "valves": Array [
                   0,
@@ -515,10 +515,10 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 29,
-                  "month": 11,
-                  "wday": 2,
-                  "year": 50,
+                  "day": 4,
+                  "month": 0,
+                  "wday": 1,
+                  "year": 51,
                 },
                 "valves": Array [
                   0,
@@ -529,10 +529,10 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 29,
-                  "month": 11,
-                  "wday": 2,
-                  "year": 50,
+                  "day": 4,
+                  "month": 0,
+                  "wday": 1,
+                  "year": 51,
                 },
                 "valves": Array [
                   0,
@@ -543,10 +543,10 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 29,
-                  "month": 11,
-                  "wday": 2,
-                  "year": 50,
+                  "day": 4,
+                  "month": 0,
+                  "wday": 1,
+                  "year": 51,
                 },
                 "valves": Array [
                   0,

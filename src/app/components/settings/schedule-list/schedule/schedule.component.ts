@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Schedule} from '../../../../auto/struct';
 
 @Component({
@@ -7,16 +7,13 @@ import {Schedule} from '../../../../auto/struct';
   styleUrls: ['./schedule.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScheduleComponent implements OnInit {
+export class ScheduleComponent {
   @Input() schedule: Schedule;
   @Output() scheduleChange = new EventEmitter<Schedule>();
   @Input() name: string;
   @Output() nameChange = new EventEmitter<string>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {

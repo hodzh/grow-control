@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { DeviceRequestType } from '../../model/device-request-type';
 import { ActionConnectRequest } from '../../store/connect/connect.reducer';
@@ -18,7 +18,7 @@ import { ActionSettingsSync } from '../../store/settings/settings.reducer';
   styleUrls: ['./dev.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DevComponent implements OnInit, OnDestroy {
+export class DevComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -28,9 +28,6 @@ export class DevComponent implements OnInit, OnDestroy {
     private readonly deviceSimulateService: DeviceSimulateService,
     private readonly serialService: BrowserSerialService,
   ) {
-  }
-
-  ngOnInit() {
   }
 
   ngOnDestroy() {
@@ -61,9 +58,6 @@ export class DevComponent implements OnInit, OnDestroy {
         if (typeof index === 'undefined') {
           return;
         }
-        const raw = (this.connectBt as any).requestSerializer
-          .serialize({type: DeviceRequestType.getProgram, payload: {index}});
-        // console.log(raw);
         this.store.dispatch(new ActionConnectRequest(
           {type: DeviceRequestType.getProgram, payload: {index}}));
       });

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {SmoothieChart, TimeSeries} from 'smoothie';
 
 @Component({
@@ -6,15 +6,12 @@ import {SmoothieChart, TimeSeries} from 'smoothie';
   templateUrl: './time-chart.component.html',
   styleUrls: ['./time-chart.component.scss'],
 })
-export class TimeChartComponent implements OnInit, AfterViewInit {
+export class TimeChartComponent implements AfterViewInit {
   @ViewChild('chart', {static: true}) chartCanvas: ElementRef;
   private chart: SmoothieChart;
   private series: TimeSeries;
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {

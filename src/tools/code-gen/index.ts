@@ -1,5 +1,5 @@
-import { genTs } from "./ts-gen";
-import { genArduino } from "./arduino-gen";
+import { genTs } from './ts-gen';
+import { genArduino } from './arduino-gen';
 
 async function codeGen() {
   await genTs();

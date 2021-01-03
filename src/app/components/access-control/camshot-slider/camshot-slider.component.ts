@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, HostListener, Inject, Input} from '@angular/core';
 import {startWith, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, from} from 'rxjs';
 import {DbAccessControlCamshotValue, DbService} from '../../../services/storage/db.service';
@@ -10,7 +10,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
   templateUrl: './camshot-slider.component.html',
   styleUrls: ['./camshot-slider.component.scss']
 })
-export class CamshotSliderComponent implements OnInit {
+export class CamshotSliderComponent {
   @Input() set key(value: number) {
     this.keySubject.next(value);
   }
@@ -50,9 +50,6 @@ export class CamshotSliderComponent implements OnInit {
       case ENTER:
         break;
     }
-  }
-
-  ngOnInit() {
   }
 
   onPrev() {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ConnectStatus } from '../../model/connect-status';
 
 type PageActions = 'add' | 'back' | 'menu' | 'bt' | 'sync';
@@ -14,7 +14,7 @@ interface PageOptions {
   styleUrls: ['./page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PageComponent implements OnInit {
+export class PageComponent {
   @Input() options: PageOptions;
   @Input() title: PageOptions;
   @Input() btStatus: ConnectStatus;
@@ -113,9 +113,6 @@ export class PageComponent implements OnInit {
       this.options.actions &&
       this.options.actions.includes('bt')
     );
-  }
-
-  ngOnInit() {
   }
 
   onBack() {

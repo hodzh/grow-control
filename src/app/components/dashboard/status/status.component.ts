@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DeviceState, DeviceStatus, FertigateState } from '../../../model/device-status';
 import { Store } from '@ngrx/store';
 import { ActionConnectRequest } from '../../../store/connect/connect.reducer';
@@ -10,7 +10,7 @@ import { DeviceRequestType } from '../../../model/device-request-type';
   styleUrls: ['./status.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StatusComponent implements OnInit {
+export class StatusComponent {
   @Input() status: DeviceStatus;
   DeviceState = DeviceState;
   FertigateState = FertigateState;
@@ -18,9 +18,6 @@ export class StatusComponent implements OnInit {
   constructor(
     private readonly store: Store,
   ) {
-  }
-
-  ngOnInit() {
   }
 
   onReset() {

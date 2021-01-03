@@ -3,9 +3,8 @@ import {ConfigComponent} from './config.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {SelectBtDeviceService} from './select-bt-device/select-bt-device.service';
 import {MemoryPipe} from '../../pipes/memory.pipe';
-import { DEVICE_CONNECT } from "../../platform/device-connect";
+import { DEVICE_CONNECT } from '../../platform/device-connect';
 
 describe('ConfigComponent', () => {
   let component: ConfigComponent;

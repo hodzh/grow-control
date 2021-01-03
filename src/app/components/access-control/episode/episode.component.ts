@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {DbAccessControlEpisode, DbService} from '../../../services/storage/db.service';
-import {BehaviorSubject, from, Subject} from 'rxjs';
-import {switchMap, startWith} from 'rxjs/operators';
+import {BehaviorSubject, from} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-episode',
@@ -9,7 +9,7 @@ import {switchMap, startWith} from 'rxjs/operators';
   styleUrls: ['./episode.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EpisodeComponent implements OnInit {
+export class EpisodeComponent {
   @Input() set episode(value: DbAccessControlEpisode) {
     this.episodeSubject.next(value);
   }
@@ -31,8 +31,5 @@ export class EpisodeComponent implements OnInit {
         this.episodeKeys = keys;
         cd.markForCheck();
       });
-  }
-
-  ngOnInit() {
   }
 }

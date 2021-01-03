@@ -1,8 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {SelectBtDeviceComponent} from './select-bt-device.component';
 import {ConnectService} from '../../../services/connect/connect.service';
-import {environment} from '../../../../environments/environment';
 import {from, Observable} from 'rxjs';
 import {DeviceConnect} from '../../../model/device-connect';
 import {map} from 'rxjs/operators';

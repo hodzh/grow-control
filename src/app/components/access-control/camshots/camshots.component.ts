@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-camshots',
@@ -6,13 +6,10 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./camshots.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CamshotsComponent implements OnInit {
+export class CamshotsComponent {
   @Input() keys;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   trackByKey(index, key) {
     return key;

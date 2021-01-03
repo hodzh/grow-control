@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Program} from '../../../../auto/struct';
 import {Compote} from '../../../../auto/struct';
 import {deviceConfig} from '../../../../model/device-config';
@@ -10,7 +10,7 @@ import {dateToDateDay} from '../../../../model/date-time';
   styleUrls: ['./program.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramComponent implements OnInit {
+export class ProgramComponent {
   @Input() program: Program;
   @Output() programChange = new EventEmitter<Program>();
   @Input() name: string;
@@ -19,9 +19,6 @@ export class ProgramComponent implements OnInit {
   @Input() valves: number[];
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   onChange(changes) {
