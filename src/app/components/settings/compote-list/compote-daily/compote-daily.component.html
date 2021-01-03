@@ -1,0 +1,42 @@
+<mat-form-field>
+  <input matInput
+    type="number"
+    placeholder="Days"
+    [value]="compoteDaily.days"
+    (input)="onChange({days: +$event.target.value})"
+  >
+</mat-form-field>
+<mat-form-field>
+  <input matInput
+    type="number"
+    placeholder="Light schedule"
+    [value]="compoteDaily.schedule"
+    (input)="onChange({schedule: +$event.target.value})"
+  >
+</mat-form-field>
+<mat-form-field>
+  <input matInput
+    type="number"
+    placeholder="Volume (mL)"
+    [value]="compoteDaily.volume"
+    (input)="onChange({volume: +$event.target.value})"
+  >
+</mat-form-field>
+<mat-form-field>
+  <input matInput
+    type="number"
+    placeholder="Washing Volume (mL)"
+    [value]="compoteDaily.washVolume"
+    (input)="onChange({washVolume: +$event.target.value})"
+  >
+</mat-form-field>
+<ng-container *ngFor="let soil of soils; let index = index; trackBy: trackByIndex">
+  <mat-form-field>
+    <input matInput
+      type="number"
+      [placeholder]="(soil || (index + 1)) + ' Volume (0.1 mL)'"
+      [value]="compoteDaily.dose[index]"
+      (input)="onDoseChange(index, +$event.target.value)"
+    >
+  </mat-form-field>
+</ng-container>

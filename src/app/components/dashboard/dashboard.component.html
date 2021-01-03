@@ -1,0 +1,29 @@
+<div class="d-flex flex-wrap">
+  <mat-card class="w-100 m-1">
+    <mat-card-content class="w-100 h-100 d-flex align-items-center">
+      <mat-icon svgIcon="clock-outline"></mat-icon>
+      &nbsp;
+      Time {{time$ | async | dateTime}}
+      &nbsp;
+      <button mat-icon-button (click)="onSyncTime()">
+        <mat-icon svgIcon="sync"></mat-icon>
+      </button>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="w-100 m-1">
+    <mat-card-content class="w-100">
+      <div>
+        <mat-icon svgIcon="thermometer"></mat-icon>
+        Temperature&nbsp;{{temp$ | async | number: '1.2-2'}}℃
+        Min&nbsp;{{minTemp$ | async | number: '1.2-2'}}℃
+        Max&nbsp;{{maxTemp$ | async | number: '1.2-2'}}℃
+      </div>
+      <app-time-chart #chart></app-time-chart>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="w-100 m-1">
+    <mat-card-content class="w-100 h-100 d-flex align-items-center">
+      <app-status class="w-100" [status]="status$ | async"></app-status>
+    </mat-card-content>
+  </mat-card>
+</div>

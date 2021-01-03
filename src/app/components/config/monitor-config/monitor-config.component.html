@@ -1,0 +1,21 @@
+<div>
+  Time
+  <app-device-monitor
+    [config]="config.time"
+    (configChange)="onChange({time: $event})"
+  ></app-device-monitor>
+</div>
+<div>
+  Temp
+  <app-device-monitor
+    [config]="config.temp"
+    (configChange)="onChange({temp: $event})"
+  ></app-device-monitor>
+</div>
+<div>
+  Status
+  <app-device-monitor
+    [config]="config.status"
+    (configChange)="onChange({status: $event})"
+  ></app-device-monitor>
+</div>

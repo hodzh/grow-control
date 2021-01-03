@@ -1,0 +1,18 @@
+<div class="row">
+  <mat-slide-toggle class="col-12"
+    [checked]="!!schedule.enable" (change)="onChange({enable: +$event.checked})">
+    Enable
+  </mat-slide-toggle>
+  <app-day-time
+    class="col-12"
+    [time]="schedule.startTime"
+    (timeChange)="onChange({startTime: $event})"
+  >
+  </app-day-time>
+  <app-day-time
+    class="col-12"
+    [time]="schedule.endTime"
+    (timeChange)="onChange({endTime: $event})"
+  >
+  </app-day-time>
+</div>

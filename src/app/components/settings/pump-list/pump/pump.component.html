@@ -1,0 +1,45 @@
+<div>
+  <mat-form-field>
+    <input matInput
+      type="text"
+      placeholder="Name"
+      [value]="name"
+      (input)="onNameChange($event.target.value)"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput
+      type="number"
+      placeholder="Min flow"
+      [value]="pump.minFlow"
+      (input)="onChange({minFlow: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput
+      type="number"
+      placeholder="Starting Time"
+      [value]="pump.startingTime"
+      (input)="onChange({startingTime: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-slide-toggle class="col-12" [checked]="!!pump.pwm" (change)="onChange({pwm: +$event.checked})">
+    PWM
+  </mat-slide-toggle>
+  <mat-form-field>
+    <input matInput
+      type="number"
+      placeholder="PWM Flow"
+      [value]="pump.pwmFlow"
+      (input)="onChange({pwmFlow: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput
+      type="number"
+      placeholder="Rate"
+      [value]="pump.rate"
+      (input)="onChange({rate: +$event.target.value})"
+    >
+  </mat-form-field>
+</div>

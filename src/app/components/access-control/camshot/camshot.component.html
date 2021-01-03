@@ -1,0 +1,9 @@
+<div class="d-flex flex-column flex-nowrap">
+  <ng-container *ngIf="camshot">
+    <img [attr.src]="camshot.image" width="64" height="48" class="flex-fill"
+    (click)="onClick()"/>
+  </ng-container>
+  <div>
+    {{key | date: 'HH:mm:ss'}}
+  </div>
+</div>

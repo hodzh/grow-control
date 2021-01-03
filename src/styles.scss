@@ -1,0 +1,13 @@
+@import '~@angular/cdk/overlay-prebuilt.css';
+@import '~@angular/cdk/a11y-prebuilt.css';
+@import '../node_modules/bootstrap/scss/bootstrap-reboot';
+@import '../node_modules/bootstrap/scss/bootstrap-grid';
+@import '../node_modules/bootstrap/scss/_utilities';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+mat-icon {
+  vertical-align: baseline !important;
+  svg {
+    vertical-align: top;
+  }
+}

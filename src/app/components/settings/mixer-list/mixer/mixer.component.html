@@ -1,0 +1,26 @@
+<div>
+  <mat-form-field>
+    <input matInput
+      type="text"
+      placeholder="Name"
+      [value]="name"
+      (input)="onNameChange($event.target.value)"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput
+      type="number"
+      placeholder="Seconds"
+      [value]="mixer.seconds"
+      (input)="onChange({seconds: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput
+           type="number"
+           placeholder="Wash seconds"
+           [value]="mixer.washSeconds"
+           (input)="onChange({washSeconds: +$event.target.value})"
+    >
+  </mat-form-field>
+</div>

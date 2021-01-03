@@ -1,0 +1,38 @@
+<div class="d-flex flex-column app-content">
+  <mat-toolbar>
+    <button (click)="sidenav.toggle()" *ngIf="showMenu" mat-icon-button>
+      <mat-icon svgIcon="menu"></mat-icon>
+    </button>
+    <button (click)="onBack()" *ngIf="showBack" mat-icon-button>
+      <mat-icon svgIcon="arrow-left"></mat-icon>
+    </button>
+    <span class="flex-fill text-center">{{options?.title}}</span>
+    <button (click)="onAdd()" *ngIf="showAdd" mat-icon-button>
+      <mat-icon svgIcon="plus-circle-outline"></mat-icon>
+    </button>
+    <button (click)="onSync()" *ngIf="showSync" mat-icon-button>
+      <mat-icon svgIcon="sync"></mat-icon>
+    </button>
+    <button *ngIf="showBt" mat-icon-button>
+      <mat-icon (click)="onBt()" [svgIcon]="btStatus | btStatusIcon"></mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-sidenav-container (backdropClick)="sidenav.close()" class="flex-fill">
+    <mat-sidenav #sidenav mode="over">
+      <mat-nav-list>
+        <a (click)="sidenav.toggle()"
+           *ngFor="let link of links"
+           [routerLink]="link.route"
+           mat-list-item
+        >
+          <mat-icon *ngIf="link.icon" [svgIcon]="link.icon"></mat-icon>
+          &nbsp;
+          {{link.title}}
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <ng-content></ng-content>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

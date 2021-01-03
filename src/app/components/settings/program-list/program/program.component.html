@@ -1,0 +1,36 @@
+<mat-form-field>
+  <input matInput
+    placeholder="Name"
+    [value]="name"
+    (input)="onNameChange($event.target.value)"
+  >
+</mat-form-field>
+<mat-form-field>
+  <mat-select
+    placeholder="Compote"
+    [value]="program.compote"
+    (selectionChange)="onChange({compote: $event.value})"
+  >
+    <mat-option *ngFor="let compote of compotes; let index = index" [value]="index">
+      {{compote || (index + 1)}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <input matInput placeholder="Start" [matDatepicker]="startDatepicker"
+    [value]="program.start | dateDay" (dateChange)="onChangeDate($event.value)">
+  <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+  <mat-datepicker #startDatepicker></mat-datepicker>
+</mat-form-field>
+<mat-form-field>
+  <mat-select
+    placeholder="Valves"
+    [value]="program.valves | bits"
+    (selectionChange)="onChangeValves($event.value)"
+    multiple
+  >
+    <mat-option *ngFor="let valve of valves" [value]="valve">
+      {{valve}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -1,0 +1,12 @@
+<mat-slide-toggle class="col-12"
+  [checked]="config.enable" (change)="onChange({enable: $event.checked})">
+  Enable
+</mat-slide-toggle>
+<mat-form-field>
+  <input matInput
+    type="number"
+    placeholder="Interval"
+    [value]="config.interval"
+    (input)="onChange({interval: +$event.target.value})"
+  >
+</mat-form-field>

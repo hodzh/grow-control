@@ -1,0 +1,4 @@
+<cdk-virtual-scroll-viewport itemSize="120" class="h-100 w-100">
+  <app-episode *cdkVirtualFor="let log of log$ | async; trackBy: trackByKey" [episode]="log">
+  </app-episode>
+</cdk-virtual-scroll-viewport>

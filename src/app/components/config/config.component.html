@@ -1,0 +1,52 @@
+<mat-accordion *ngIf="config$ | async as config">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon svgIcon="bluetooth"></mat-icon>
+        &nbsp;Bluetooth
+      </mat-panel-title>
+      <mat-panel-description>
+        {{config.device?.name}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <button mat-button (click)="selectDevice()">Select Device</button>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon svgIcon="database"></mat-icon>
+        &nbsp;Database
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-database-config
+      [sizes]="databaseSizes$ | async"
+      [update]="updateDatabaseSizes$ | async"
+      (clear)="clearDb($event)"
+      (updateSizes)="updateDb()"
+    ></app-database-config>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon svgIcon="monitor"></mat-icon>
+        &nbsp;Monitor
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-monitor-config
+      [config]="monitor$ | async"
+      (configChange)="onChange({monitor: $event})"
+    ></app-monitor-config>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon svgIcon="webcam"></mat-icon>
+        &nbsp;Access control
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-access-control-config
+      [accessControl]="accessControl$ | async"
+      (accessControlChange)="onChange({accessControl: $event})"
+    ></app-access-control-config>
+  </mat-expansion-panel>
+</mat-accordion>

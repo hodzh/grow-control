@@ -1,0 +1,9 @@
+:host ::ng-deep .cdk-virtual-scroll-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+app-camshot {
+  width: 64px;
+}

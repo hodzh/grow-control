@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>{{key | date: 'yyyy.MM.dd HH:mm:ss'}}</h1>
+<mat-dialog-content class="pt-2">
+  <div class="d-flex flex-column flex-nowrap">
+    <div class="d-flex flex-row flex-nowrap">
+      <div (click)="onPrev()">
+        <mat-icon svgIcon="chevron-left"></mat-icon>
+      </div>
+      <div  class="flex-fill" *ngIf="camshot">
+        <img class="mx-auto d-block" [attr.src]="camshot.image"/>
+      </div>
+      <div (click)="onNext()">
+        <mat-icon svgIcon="chevron-right"></mat-icon>
+      </div>
+    </div>
+    <div>
+      {{key | date: 'HH:mm:ss'}}
+    </div>
+  </div>
+</mat-dialog-content>

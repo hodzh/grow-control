@@ -1,0 +1,45 @@
+<div>
+  <mat-form-field class="col-12">
+    <input
+      matInput
+      type="text"
+      placeholder="Name"
+      [value]="name"
+      (input)="onNameChange($event.target.value)"
+    >
+  </mat-form-field>
+  <mat-form-field class="col-12">
+    <input
+      matInput
+      type="number"
+      placeholder="Rate (0.1 mL / ms)"
+      [value]="dose.rate"
+      (input)="onChange({rate: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-form-field class="col-12">
+    <input
+      matInput
+      type="number"
+      placeholder="Seconds"
+      [value]="dose.seconds"
+      (input)="onChange({seconds: +$event.target.value})"
+    >
+  </mat-form-field>
+  <mat-slide-toggle
+    class="col-12"
+    [checked]="!!dose.pwm"
+    (change)="onChange({pwm: +$event.checked})"
+  >
+    PWM
+  </mat-slide-toggle>
+  <mat-form-field>
+    <input
+      matInput
+      type="number"
+      placeholder="PWM Sensor"
+      [value]="dose.pwmSensor"
+      (input)="onChange({pwmSensor: +$event.target.value})"
+    >
+  </mat-form-field>
+</div>

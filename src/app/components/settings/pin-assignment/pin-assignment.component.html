@@ -1,0 +1,155 @@
+<mat-tab-group class="h-100">
+  <mat-tab label="Blocks">
+    <mat-accordion class="w-100">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Pump
+          </mat-panel-title>
+          <mat-panel-description>
+            Pump pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinPumps$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('pump', $event.index, $event.value)"
+            title="Pump"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Flow sensor
+          </mat-panel-title>
+          <mat-panel-description>
+            Flow sensor pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinFlowSensors$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('flowSensor', $event.index, $event.value)"
+            title="Flow Sensor"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Mixer
+          </mat-panel-title>
+          <mat-panel-description>
+            Mixer pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinMixers$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('mixer', $event.index, $event.value)"
+            title="Mixer"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Dose
+          </mat-panel-title>
+          <mat-panel-description>
+            Dose pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinDoses$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('dose', $event.index, $event.value)"
+            title="Dose"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Dose Mixer
+          </mat-panel-title>
+          <mat-panel-description>
+            Dose Mixer pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinDoseMixers$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('doseMixer', $event.index, $event.value)"
+            title="Dose Mixer"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Valve
+          </mat-panel-title>
+          <mat-panel-description>
+            Valve pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinValves$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('valve', $event.index, $event.value)"
+            title="Valve"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Level sensor
+          </mat-panel-title>
+          <mat-panel-description>
+            Level sensor pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinLevelSensors$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange('levelSensor', $event.index, $event.value)"
+            title="Level Sensor"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-tab>
+  <mat-tab label="Pins">
+<!--    <div class="container-fluid">-->
+<!--      <div *ngFor="let pinInfo of pins2" class="row">-->
+<!--        <div class="col-1 my-auto">Pin #{{ pinInfo.key }}</div>-->
+<!--        <mat-form-field class="col">-->
+<!--          <mat-label>Device type</mat-label>-->
+<!--          <mat-select>-->
+<!--            <mat-option *ngFor="let partName of devicePartTypeName | keyvalue" [value]="partName.key">-->
+<!--              {{partName.value}}-->
+<!--            </mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
+<!--        <mat-form-field class="col">-->
+<!--          <mat-label>Device index</mat-label>-->
+<!--          <mat-select>-->
+<!--            <mat-option *ngFor="let partIndex of 10 | times" [value]="partIndex">-->
+<!--              {{partIndex}}-->
+<!--            </mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--    </div>-->
+  </mat-tab>
+</mat-tab-group>

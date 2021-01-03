@@ -1,0 +1,16 @@
+<div>
+  <button mat-button (click)="onFilter()" class="mt-1">
+    <mat-icon svgIcon="filter-outline" class="align-middle"></mat-icon>
+    Filters...
+  </button>
+  <button mat-icon-button (click)="onFilterReset()" *ngIf="hasFilter$ | async">
+    <mat-icon svgIcon="close-circle-outline"></mat-icon>
+  </button>
+</div>
+<cdk-virtual-scroll-viewport itemSize="24" class="flex-fill">
+  <div *cdkVirtualFor="let log of log$ | async">
+    {{log.time | date: 'HH:mm:ss'}}
+    <mat-icon [svgIcon]="log.icon"></mat-icon>
+    {{log.text}}
+  </div>
+</cdk-virtual-scroll-viewport>

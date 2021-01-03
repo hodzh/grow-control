@@ -1,0 +1,16 @@
+<div *ngIf="update; else databaseSizes">
+  <mat-progress-spinner mode="indeterminate" diameter="58"></mat-progress-spinner>
+</div>
+<div class="mt-2">
+  <button mat-button (click)="updateSizes.emit()">Update database</button>
+  <button mat-button (click)="onClear()">Clear database</button>
+</div>
+<ng-template #databaseSizes>
+  <div *ngFor="let size of sizes">
+    <mat-checkbox
+      [checked]="selection.isSelected(size.name)"
+      (change)="selection.toggle(size.name)"
+    ></mat-checkbox>
+    {{size.name}} - {{size.size | memory}} of {{size.count}} records
+  </div>
+</ng-template>

@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Select Bluetooth device</h1>
+<mat-dialog-content>
+  <mat-selection-list [compareWith]="compareWith">
+    <ng-container *ngIf="devices; else loading">
+      <ng-container *ngFor="let device of devices">
+        <mat-list-option [value]="device">
+          {{device.name}}
+          {{device.address}}
+          {{device.id}}
+          {{device.class}}
+        </mat-list-option>
+        <mat-divider></mat-divider>
+      </ng-container>
+    </ng-container>
+  </mat-selection-list>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="onSelect()"
+    [disabled]="!selectionList?.selectedOptions.selected.length">Select
+  </button>
+</div>
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>

@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Select index number</h1>
+<mat-dialog-content class="pt-2">
+  <mat-radio-group [(ngModel)]="value">
+    <mat-radio-button *ngFor="let option of options" [value]="option.value" class="mr-3">
+      {{ option.title }}
+    </mat-radio-button>
+  </mat-radio-group>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button (click)="onSelect()" cdkFocusInitial color="primary" mat-button>Select</button>
+</div>

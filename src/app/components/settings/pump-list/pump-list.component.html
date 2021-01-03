@@ -1,0 +1,20 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let pump of pumps$ | async; let index = index; trackBy: trackByIndex">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        #{{index + 1}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{(names$ | async)[index]}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-pump
+        [pump]="pump"
+        [name]="(names$ | async)[index]"
+        (pumpChange)="onChange(index, $event)"
+        (nameChange)="onNameChange(index, $event)"
+      ></app-pump>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>

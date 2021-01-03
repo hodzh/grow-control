@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Log filter</h1>
+<mat-dialog-content class="pb-2">
+  <div
+    *ngFor="let line of filter$ | async; trackBy: trackBy"
+    [class]="'app-tree-padding-' + line.level"
+    [class.d-none]="!line.visible"
+  >
+    <button
+      mat-icon-button
+      (click)="onExpand(line)"
+      [attr.aria-label]="'toggle ' + line.title"
+      [class.invisible]="!line.expandable"
+    >
+      <mat-icon class="mat-icon-rtl-mirror"
+        [svgIcon]="line.expanded ? 'chevron-down' : 'chevron-right'">
+      </mat-icon>
+    </button>
+    <mat-checkbox
+      [checked]="line.selected"
+      [indeterminate]="line.selected === null"
+      (change)="onSelect(line)"
+      class="align-middle"
+    >
+      {{line.title}}
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="onReset()">Reset</button>
+  <button mat-button (click)="onApply()">Apply</button>
+</div>

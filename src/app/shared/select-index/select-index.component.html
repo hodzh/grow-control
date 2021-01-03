@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ data.title || 'Select index number' }}</h1>
+<mat-dialog-content class="pt-2">
+  <mat-radio-group (change)="onChange($event.value)" [value]="index">
+    <mat-radio-button *ngFor="let id of count | times" [value]="id" class="mr-3">
+      {{id + 1}}
+    </mat-radio-button>
+  </mat-radio-group>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button (click)="onCancel()" cdkFocusInitial mat-button>Cancel</button>
+  <button (click)="onSelect()" mat-button>Select</button>
+</div>

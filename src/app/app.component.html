@@ -1,0 +1,11 @@
+<app-page
+  [options]="pageOptions$ | async"
+  [btStatus]="btStatus$ | async"
+  [syncStatus]="sync$ | async"
+  (back)="onBack()"
+  (add)="onAdd()"
+  (bt)="onBt()"
+  (sync)="onSync()"
+>
+  <router-outlet></router-outlet>
+</app-page>

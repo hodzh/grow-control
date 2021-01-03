@@ -1,0 +1,4 @@
+describe('ConnectReducer', () => {
+  it('ActionConnectInit', () => {
+  });
+});

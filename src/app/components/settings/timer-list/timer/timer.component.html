@@ -1,0 +1,25 @@
+<div>
+  <mat-slide-toggle
+    class="col-12"
+    [checked]="!!timer.enable" (change)="onChange({enable: +$event.checked})"
+  >
+    Enable
+  </mat-slide-toggle>
+  <app-day-time
+    class="col-12"
+    [time]="timer.time"
+    (timeChange)="onChange({time: $event})"
+  >
+  </app-day-time>
+  <mat-form-field class="col-12">
+    <mat-select
+      placeholder="Program"
+      [value]="timer.program"
+      (selectionChange)="onChange({program: $event.value})"
+    >
+      <mat-option *ngFor="let program of programs; let index = index" [value]="index">
+        {{program || (index + 1)}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

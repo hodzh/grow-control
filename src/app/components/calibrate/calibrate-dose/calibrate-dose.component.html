@@ -1,0 +1,43 @@
+<mat-vertical-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="firstFormGroup" [editable]="false">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Dose rate</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Volume (mL)" formControlName="firstCtrl">
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Start</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup" [editable]="false">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Pumping</ng-template>
+      <div>
+        <button mat-button (click)="stepper.reset()">Cancel</button>
+        <button mat-button matStepperNext>Stop</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [editable]="false">
+    <ng-template matStepLabel>Save</ng-template>
+    You are going to save new rate value.
+    <div>
+      <button mat-button (click)="stepper.reset()">Cancel</button>
+      <button mat-button matStepperNext>Save</button>
+    </div>
+  </mat-step>
+  <mat-step [editable]="false">
+    <ng-template matStepLabel>Done</ng-template>
+    You are done.
+    <div>
+      <button mat-button (click)="stepper.reset()">Repeat</button>
+    </div>
+  </mat-step>
+  <ng-template matStepperIcon="edit">
+    <mat-icon svgIcon="pencil"></mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="done">
+    <mat-icon svgIcon="check"></mat-icon>
+  </ng-template>
+</mat-vertical-stepper>

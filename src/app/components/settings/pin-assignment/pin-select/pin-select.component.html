@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="row">
+    <mat-form-field class="col-12" *ngFor="let value of pins; trackBy: trackByValue; let index = index">
+      <mat-select
+        placeholder="Pin {{title}} #{{index}}"
+        [value]="value"
+        (selectionChange)="onChange(index, $event.value)"
+      >
+        <mat-option *ngFor="let pin of allPins; trackBy: trackByValue" [value]="pin">
+          <div class="pl-4">
+            {{pin}}
+          </div>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>

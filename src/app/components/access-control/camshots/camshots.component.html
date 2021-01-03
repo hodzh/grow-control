@@ -1,0 +1,7 @@
+<cdk-virtual-scroll-viewport itemSize="64" class="h-100 w-100 overflow-auto" orientation="horizontal">
+  <app-camshot
+    *cdkVirtualFor="let key of keys; trackBy: trackByKey"
+    class="d-block"
+    [key]="key"
+  ></app-camshot>
+</cdk-virtual-scroll-viewport>
