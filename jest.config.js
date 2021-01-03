@@ -7,32 +7,21 @@ module.export = {
     "src/app/**/*.ts"
   ],
   "testMatch": [
-    "**/__tests__/**/*.[jt]s?(x)",
-    "**/?(*.)+(spec).[jt]s?(x)"
+    "src/**/?(*.)+(spec).[jt]s?(x)"
   ],
   "testPathIgnorePatterns": [
-    "/node_modules/",
-    "/cordova/"
+    "<rootDir>/node_modules/**",
+    "<rootDir>/cordova/**"
+  ],
+  "transformIgnorePatterns": [
+    "<rootDir>/node_modules/**",
+    "<rootDir>/cordova/**"
   ],
   globals: {
     'ts-jest': {
       tsConfigFile: '<rootDir>/src/tsconfig.spec.json',
     },
   },
-  // "setupFilesAfterEnv": [
-  //   "./jest-setup.ts"
-  // ],
-  // "collectCoverageFrom": [
-  //   "src/app/**/*.ts"
-  // ],
-  // "testMatch": [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec).[jt]s?(x)"
-  // ],
-  // "testPathIgnorePatterns": [
-  //   "/node_modules/",
-  //   "/cordova/"
-  // ],
   roots: ['src'],
   setupTestFrameworkScriptFile: '<rootDir>/src/setup-jest.ts',
   moduleNameMapper: {
