@@ -9,7 +9,7 @@
     "build.prod": "ng build --prod",
     "build.android": "ng build --configuration=android",
     "build.android.prod": "ng build --configuration=android-production",
-    "test": "jest --detectOpenHandles",
+    "test": "ng test",
     "watch": "jest --watch",
     "snapshot": "jest --updateSnapshot",
     "coverage": "jest --coverage",
