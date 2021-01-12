@@ -36,7 +36,8 @@ describe('DashboardReducer', () => {
           volume: 0,
           totalVolume: 0,
           mix: 0,
-          dose: 0,
+          doseId: 0,
+          valveId: 0,
         },
       });
     });

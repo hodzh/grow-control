@@ -65,6 +65,11 @@ export class PageComponent {
       icon: 'cellphone-settings',
     },
     {
+      route: ['/', 'test'],
+      title: 'Test',
+      icon: 'cursor-pointer',
+    },
+    {
       route: ['/', 'dev'],
       title: 'Development',
       icon: 'dev-to',

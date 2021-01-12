@@ -80,6 +80,8 @@ export interface DeviceStatus {
   volume: number;
   totalVolume: number;
   mix: number;
+  doseId: number;
+  valveId: number;
 }
 export interface Settings {
   program: Program[];

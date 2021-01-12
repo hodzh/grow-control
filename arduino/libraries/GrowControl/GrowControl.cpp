@@ -55,7 +55,10 @@ void GrowControl::setup(void) {
     allOff();
     // init inputs
     for (uint8_t i = 0; i < FLOW_SENSOR_COUNT; i++) {
-        pinMode(EEPROMemory::getPinFlowSensor(i), INPUT);
+        pinMode(EEPROMemory::getPinFlowSensor(i), INPUT_PULLUP);
+    }
+    for (uint8_t i = 0; i < LEVEL_SENSOR_COUNT; i++) {
+        pinMode(EEPROMemory::getPinLevelSensor(i), INPUT_PULLUP);
     }
 #if RTC_COUNT == 1
     // init real time control module
@@ -139,6 +142,7 @@ void GrowControl::invokeStop(uint8_t errorCode) {
     }
     if (!_stackCount && _status.state != CMD_ERROR) {
         resetStatus();
+        allOff();
     }
 }
 
@@ -159,51 +163,51 @@ void GrowControl::fertigateStart(uint8_t programId, CmdStopCallback scb) {
     EEPROMemory::getProgram(programId, program);
     state.compoteId = program.compote;
     state.compoteDailyId = getCompoteDaily(program);
-    state.step = 0;
     _status.state = CMD_FERTIGATE;
+    _status.cmdState = 0;
 }
 
 void GrowControl::fertigateLoop(void) {
     FertigateState &state = getState<FertigateState>();
     SERIAL_PWRITE("fertigate loop ");
-    SERIAL_WRITELN(state.step);
-    switch (state.step) {
+    SERIAL_WRITELN(_status.cmdState);
+    switch (_status.cmdState) {
         case FERTIGATE_STATE_PUMP_IN:
             pumpStart(
                 PUMP_IN,
                 FLOW_SENSOR_IN,
                 getTotalVolume(state.programId, state.compoteId, state.compoteDailyId),
-                &GrowControl::pumpInStop
+                &GrowControl::fertigatePumpInStop
             );
             break;
         case FERTIGATE_STATE_MIX_DOSE:
-            mixDoseStart(0);
+            mixDoseStart(&GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_DOSE:
-            doseStart(state.programId, state.compoteId, state.compoteDailyId, 0);
+            doseStart(state.programId, state.compoteId, state.compoteDailyId, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_MIX:
-            mixStart(0, 0);
+            mixStart(0, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_IRRIGATE:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 0, 0);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 0, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_IRRIGATE_FINISH:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, 0);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_WASH_PUMP_IN:
             pumpStart(
                 PUMP_IN,
                 FLOW_SENSOR_IN,
                 getTotalWashVolume(state.programId, state.compoteId, state.compoteDailyId),
-                &GrowControl::pumpInStop
+                &GrowControl::fertigatePumpInStop
             );
             break;
         case FERTIGATE_STATE_WASH_MIX:
-            mixStart(1, 0);
+            mixStart(1, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_WASH:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, 0);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_DONE:
             SERIAL_PWRITE("fertigate stop");
@@ -213,7 +217,18 @@ void GrowControl::fertigateLoop(void) {
             fatalError(ERROR_BAD_CMD_STATE);
             return;
     }
-    state.step += 1;
+}
+
+void GrowControl::fertigatePumpInStop(uint8_t errorCode) {
+    if (errorCode) {
+        fatalError(ERROR_PUMP_IN);
+        return;
+    }
+    fertigateStepStop(0);
+}
+
+void GrowControl::fertigateStepStop(uint8_t errorCode) {
+    _status.cmdState += 1;
 }
 
 void GrowControl::mixDoseStart(CmdStopCallback scb) {
@@ -222,15 +237,15 @@ void GrowControl::mixDoseStart(CmdStopCallback scb) {
     SERIAL_PWRITELN("mix dose start");
     Dose settings;
     EEPROMemory::getDose(0, settings);
-    state.seconds = settings.seconds;
+    _status.mix = settings.seconds;
     setStateDoseMixer(0, 1);
     timerStart(1000UL, 0);
 }
 
 void GrowControl::mixDoseLoop(void) {
     MixerState &state = getState<MixerState>();
-    state.seconds -= 1;
-    if (state.seconds) {
+    _status.mix -= 1;
+    if (_status.mix) {
         timerStart(1000UL, 0);
         return;
     }
@@ -250,7 +265,7 @@ void GrowControl::doseStart(
     DoseState &state = getState<DoseState>();
     Program program;
     EEPROMemory::getProgram(programId, program);
-    state.doseId = 0;
+    _status.doseId = 0;
     state.compoteId = program.compote;
     state.compoteDailyId = getCompoteDaily(program);
     SERIAL_PWRITE("dose start ");
@@ -262,18 +277,18 @@ void GrowControl::doseStart(
 void GrowControl::doseLoop(void) {
     DoseState &state = getState<DoseState>();
     SERIAL_PWRITE("dose loop ");
-    SERIAL_WRITELN(state.doseId);
+    SERIAL_WRITELN(_status.doseId);
     Dose settings;
-    EEPROMemory::getDose(state.doseId, settings);
+    EEPROMemory::getDose(_status.doseId, settings);
     CompoteDaily compoteDaily;
     EEPROMemory::getCompoteDaily(state.compoteId, state.compoteDailyId, compoteDaily);
-    uint16_t dose = compoteDaily.dose[state.doseId];
+    uint16_t dose = compoteDaily.dose[_status.doseId];
     if (!dose) {
         SERIAL_PWRITELN("dose skip");
         doseStop(0);
         return;
     }
-    setStateDose(state.doseId, 1);
+    setStateDose(_status.doseId, 1);
     uint32_t timeout = dose;
     timeout *= settings.rate;
     timeout /= 10;
@@ -282,10 +297,10 @@ void GrowControl::doseLoop(void) {
 
 void GrowControl::doseStop(uint8_t errorCode) {
     DoseState &state = getState<DoseState>();
-    setStateDose(state.doseId, 0);
+    setStateDose(_status.doseId, 0);
     SERIAL_PWRITELN("dose timer stop");
-    state.doseId += 1;
-    if (state.doseId >= DOSE_COUNT) {
+    _status.doseId += 1;
+    if (_status.doseId >= DOSE_COUNT) {
         SERIAL_PWRITELN("dose stop");
         invokeStop(0);
     }
@@ -304,16 +319,16 @@ void GrowControl::mixStart(uint8_t mode, CmdStopCallback scb) {
     }
     SERIAL_PWRITELN("mix start");
     setStateMixer(0, 1);
-    state.seconds = seconds;
+    _status.mix = seconds;
     timerStart(1000UL, 0);
 }
 
 void GrowControl::mixLoop(void) {
     MixerState &state = getState<MixerState>();
-    state.seconds -= 1;
+    _status.mix -= 1;
     SERIAL_PWRITE("mix loop ");
-    SERIAL_WRITELN(state.seconds);
-    if (state.seconds) {
+    SERIAL_WRITELN(_status.mix);
+    if (_status.mix) {
         timerStart(1000UL, 0);
         return;
     }
@@ -336,7 +351,7 @@ void GrowControl::irrigateStart(
     EEPROMemory::getCompoteDaily(compoteId, compoteDailyId, compoteDaily);
     IrrigateState &state = getState<IrrigateState>();
     memcpy(state.valves, program.valves, VALVE_COUNT / 8);
-    state.valveId = 0xFF;
+    _status.valveId = 0xFF;
     state.volume = mode ? compoteDaily.washVolume : compoteDaily.volume;
     SERIAL_PWRITE("irrigate start ");
     for (uint8_t i = 0; i < VALVE_COUNT / 8; ++i) {
@@ -348,10 +363,10 @@ void GrowControl::irrigateStart(
 
 void GrowControl::irrigateLoop(void) {
     IrrigateState &state = getState<IrrigateState>();
-    SERIAL_PWRITE("irrigate loop");
-    SERIAL_WRITELN(state.valveId);
+    SERIAL_PWRITE("irrigate loop ");
+    SERIAL_WRITELN(_status.valveId);
     setNextValve();
-    if (state.valveId >= VALVE_COUNT) {
+    if (_status.valveId >= VALVE_COUNT) {
         SERIAL_PWRITELN("irrigate done");
         invokeStop(0);
         return;
@@ -558,20 +573,20 @@ void GrowControl::checkSchedules(void) {
 
 void GrowControl::setNextValve(void) {
     IrrigateState &state = getState<IrrigateState>();
-    if (state.valveId < VALVE_COUNT) {
-        setStateValve(state.valveId, 0);
-        state.valveId += 1;
+    if (_status.valveId < VALVE_COUNT) {
+        setStateValve(_status.valveId, 0);
+        _status.valveId += 1;
     } else {
-        state.valveId = 0;
+        _status.valveId = 0;
     }
-    for (uint8_t i = state.valveId; i < VALVE_COUNT; ++i) {
+    for (uint8_t i = _status.valveId; i < VALVE_COUNT; ++i) {
         if (state.valves[i / 8] & ((uint8_t) 1 << (i % 8))) {
-            state.valveId = i;
-            setStateValve(state.valveId, 1);
+            _status.valveId = i;
+            setStateValve(_status.valveId, 1);
             return;
         }
     }
-    state.valveId = 255;
+    _status.valveId = 255;
 }
 
 uint8_t GrowControl::getCompoteDaily(const Program &program) {
@@ -810,10 +825,10 @@ void GrowControl::handleCommand(void) {
             cmdSetTime();
             return;
         case REQUEST_SET_STATE_VALVE:
-//            cmdSetValves();
+            cmdSetValveState();
             return;
         case REQUEST_SET_STATE_PUMP:
-//            cmdSetPump();
+            cmdSetPumpState();
             return;
         default:
             SERIAL_PWRITELN("unknown command");
@@ -1374,12 +1389,32 @@ void GrowControl::cmdDoseMix(void) {
 }
 
 void GrowControl::cmdDose(void) {
-    SERIAL_PWRITELN("dose ");
-    SERIAL_WRITELN(_control.getBuffer().dose.programId);
+    SERIAL_PWRITE("dose ");
+    SERIAL_WRITE(_control.getBuffer().dose.programId);
+    SERIAL_PWRITE(" ");
+    SERIAL_WRITELN(_control.getBuffer().dose.doseId);
     Program program;
     EEPROMemory::getProgram(_control.getBuffer().wash.programId, program);
     uint8_t compoteId = program.compote;
     uint8_t compoteDailyId = getCompoteDaily(program);
+    _status.doseId = _control.getBuffer().dose.doseId;
+    CompoteDaily compoteDaily;
+    EEPROMemory::getCompoteDaily(compoteId, compoteDailyId, compoteDaily);
+    uint16_t dose = compoteDaily.dose[_status.doseId];
+    if (!dose) {
+        SERIAL_PWRITELN("dose skip");
+        return;
+    }
     _status.state = CMD_DOSE;
-    doseStart(_control.getBuffer().dose.programId, compoteId, compoteDailyId, 0);
+    Dose settings;
+    EEPROMemory::getDose(_status.doseId, settings);
+    setStateDose(_status.doseId, 1);
+    uint32_t timeout = dose;
+    timeout *= settings.rate;
+    timeout /= 10;
+    timerStart(timeout, &GrowControl::cmdDoseStop);
+}
+
+void GrowControl::cmdDoseStop(uint8_t errorCode) {
+    setStateDose(_status.doseId, 0);
 }

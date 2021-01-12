@@ -126,6 +126,10 @@ bool SerialControl::loop() {
 }
 
 void SerialControl::write(uint8_t type, uint8_t *data, uint16_t length) {
+    SERIAL_PWRITE("write ");
+    SERIAL_WRITE(type);
+    SERIAL_PWRITE(" ");
+    SERIAL_WRITELN(length);
 #ifdef TRACE_SERIAL_CONTROL
     SERIAL_PWRITE("send [");
     for (uint16_t i = 0; i < length; i++) {
@@ -139,11 +143,11 @@ void SerialControl::write(uint8_t type, uint8_t *data, uint16_t length) {
     SERIAL_PWRITE("type ");
     SERIAL_WRITELN(type | IOMARKER_BEGIN_MESSAGE);
 #endif
-    uint16_t length7 = 1 + static_cast<uint16_t>((static_cast<uint16_t>(length) *
-        static_cast<uint16_t>(8) + 1) / static_cast<uint16_t>(7));
-#ifdef TRACE_SERIAL_CONTROL
+    uint16_t length7 = static_cast<uint16_t>((static_cast<uint16_t>(length) *
+        static_cast<uint16_t>(8) + 6) / static_cast<uint16_t>(7));
     SERIAL_PWRITE("length ");
     SERIAL_WRITELN(length7);
+#ifdef TRACE_SERIAL_CONTROL
     SERIAL_PWRITE("write [");
 #endif
     for (uint16_t i = 0; i < length7; i++) {
@@ -170,7 +174,11 @@ void SerialControl::write(uint8_t type, uint8_t *data, uint16_t length) {
     SERIAL_PWRITELN("]");
 #endif
     uint8_t crc = SerialControl::crc6(data, length * 8);
-    SERIAL_CONTROL.write(crc | IOMARKER_END_MESSAGE);
+    SERIAL_CONTROL.write(static_cast<uint8_t>(crc | IOMARKER_END_MESSAGE));
+#ifdef TRACE_SERIAL_CONTROL
+    SERIAL_PWRITE("end ");
+    SERIAL_WRITELN(crc | IOMARKER_END_MESSAGE);
+#endif
 }
 
 uint8_t SerialControl::crc6(uint8_t *msg, uint16_t bits) {

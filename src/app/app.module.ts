@@ -27,6 +27,7 @@ import {CalibrateModule} from './components/calibrate/calibrate.module';
 import {ManualControlModule} from './components/manual-control/manual-control.module';
 import {AccessControlModule} from './components/access-control/access-control.module';
 import {MatIconRegistry} from '@angular/material/icon';
+import { TestModule } from './components/test/test.module';
 
 export function logReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   return (state, action) => {
@@ -66,6 +67,7 @@ export function logReducer(reducer: ActionReducer<any>): ActionReducer<any> {
     LogStoreModule,
     CalibrateModule,
     ManualControlModule,
+    TestModule,
     AccessControlModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     StoreModule.forRoot({}, {metaReducers: environment.production ? [] : [logReducer]}),

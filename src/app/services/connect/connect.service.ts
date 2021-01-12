@@ -10,17 +10,19 @@ import { deviceRequestMeta, deviceResponseMeta, structMeta } from '../../model/d
 import { DeviceRequestType } from '../../model/device-request-type';
 import { DeviceResponseType } from '../../model/device-response-type';
 import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConnectService {
-  response$: Observable<DeviceResponse>;
-  private requestSerializer: DeviceRequestSerializer;
-  private responseDeserializer: DeviceResponseDeserializer;
+  readonly response$: Observable<DeviceResponse>;
+  private readonly requestSerializer: DeviceRequestSerializer;
+  private readonly responseDeserializer: DeviceResponseDeserializer;
 
   constructor(
     @Inject(DEVICE_CONNECT) private readonly deviceConnect: IDeviceConnect,
+    private readonly store: Store,
   ) {
     this.requestSerializer = new DeviceRequestSerializer(
       deviceRequestMeta,
@@ -31,6 +33,7 @@ export class ConnectService {
       deviceResponseMeta,
       structMeta,
       DeviceResponseType,
+      store,
     );
     this.response$ = this.deviceConnect.response$
       .pipe(this.responseDeserializer.mapRaw)

@@ -12,10 +12,10 @@ import {
   selectorTime
 } from '../../store/dashboard/dashboard.reducer';
 import {DateTime} from '../../model/date-time';
-import {DeviceStatus} from '../../model/device-status';
 import {TimeChartComponent} from './time-chart/time-chart.component';
 import {Actions, ofType} from '@ngrx/effects';
 import {takeUntil} from 'rxjs/operators';
+import { DeviceStatus } from '../../auto/struct';
 
 @Component({
   selector: 'app-dashboard',

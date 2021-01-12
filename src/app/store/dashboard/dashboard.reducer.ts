@@ -1,6 +1,5 @@
 import { Action } from '@ngrx/store';
-import { DateTime } from '../../auto/struct';
-import { DeviceStatus } from '../../model/device-status';
+import { DateTime, DeviceStatus } from '../../auto/struct';
 
 export enum DashboardActionTypes {
   INIT = '[Dashboard] Init',
@@ -82,7 +81,8 @@ export const initialDashboardState: DashboardState = {
     volume: 0,
     totalVolume: 0,
     mix: 0,
-    dose: 0,
+    doseId: 0,
+    valveId: 0,
   },
 };
 

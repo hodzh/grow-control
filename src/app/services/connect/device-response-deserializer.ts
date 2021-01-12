@@ -2,12 +2,15 @@ import { Observable } from 'rxjs';
 import { convert7bitTo8bit, crc6, DeviceIOField, DeviceIOMarker, DeviceIOMeta, getLength } from '../../model/device-io';
 import { map } from 'rxjs/operators';
 import { DeviceResponse } from '../../auto/device-response';
+import { Store } from '@ngrx/store';
+import { ActionLogAdd, LogItemType } from '../../store/log/log.reducer';
 
 export class DeviceResponseDeserializer {
   constructor(
     private readonly meta: { [key: string]: DeviceIOMeta | string },
     private readonly struct: { [key: string]: DeviceIOMeta },
     private readonly mapper: Record<string | number, string | number>,
+    private readonly store: Store,
   ) {
     this.mapRaw = this.mapRaw.bind(this);
   }
@@ -92,7 +95,7 @@ export class DeviceResponseDeserializer {
           let offset = 0;
           return source.subscribe({
             next: (rawData: ArrayBuffer) => {
-              // console.error('received', rawData);
+              // console.log('received', rawData);
               const array = new Uint8Array(rawData);
               const length = array.length;
               for (let i = 0; i < length; i++) {
@@ -104,26 +107,41 @@ export class DeviceResponseDeserializer {
                   if (cmd) {
                     // end of message
                     if (type === null) {
-                      console.error('received end marked, but type is not defined');
+                      this.store.dispatch(new ActionLogAdd({
+                        time: new Date(),
+                        icon: 'alert-circle-outline',
+                        text: 'received end marked, but type is not defined',
+                        type: LogItemType.error,
+                      }));
                       continue;
                     }
-                    // console.error('received end marker', type);
+                    // console.log('received end marker', type);
                     const payload = convert7bitTo8bit(buffer.slice(0, offset));
                     const expectedLength = getLength(this.meta[this.mapper[type]], this.struct);
                     if (payload.byteLength !== expectedLength) {
-                      console.error('received bad length', payload.byteLength, expectedLength);
+                      this.store.dispatch(new ActionLogAdd({
+                        time: new Date(),
+                        icon: 'alert-circle-outline',
+                        text: `received bad length ${payload.byteLength} expected ${expectedLength}`,
+                        type: LogItemType.error,
+                      }));
                       type = null;
                       offset = 0;
                       continue;
                     }
                     const crc = crc6(payload);
                     if (crc !== cmdPayload) {
-                      console.error('received bad crc', crc, cmdPayload);
+                      this.store.dispatch(new ActionLogAdd({
+                        time: new Date(),
+                        icon: 'alert-circle-outline',
+                        text: `received bad crc ${cmdPayload} expected ${crc}`,
+                        type: LogItemType.error,
+                      }));
                       type = null;
                       offset = 0;
                       continue;
                     }
-                    // console.error('emit', type, payload);
+                    // console.log('emit', type, payload);
                     observer.next({ type, raw: payload.buffer });
                     type = null;
                     offset = 0;
@@ -131,7 +149,12 @@ export class DeviceResponseDeserializer {
                   }
                   // begin of message
                   if (type !== null) {
-                    console.error('received begin marked, but previous message is not complete');
+                    this.store.dispatch(new ActionLogAdd({
+                      time: new Date(),
+                      icon: 'alert-circle-outline',
+                      text: 'received begin marked, but previous message is not complete',
+                      type: LogItemType.error,
+                    }));
                   }
                   type = cmdPayload;
                   offset = 0;
@@ -139,7 +162,12 @@ export class DeviceResponseDeserializer {
                   continue;
                 }
                 if (type === null) {
-                  console.error('received body, but type is not defined');
+                  this.store.dispatch(new ActionLogAdd({
+                    time: new Date(),
+                    icon: 'alert-circle-outline',
+                    text: 'received body, but type is not defined',
+                    type: LogItemType.error,
+                  }));
                   continue;
                 }
                 buffer[offset] = byte;

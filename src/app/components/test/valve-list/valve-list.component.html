@@ -1,0 +1,8 @@
+<div *ngFor="let valve of valveCount | times; trackBy: trackByIndex" class="row">
+  <mat-slide-toggle
+    class="d-block col-12"
+    (change)="onChange(valve, +$event.checked)"
+  >
+    #{{ valve + 1 }}
+  </mat-slide-toggle>
+</div>

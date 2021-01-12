@@ -8,13 +8,13 @@
   },
   "installed_plugins": {
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "ehodzh.growControl"
+      "PACKAGE_NAME": "hodzh.growControl"
     },
     "cordova-plugin-android-permissions": {
-      "PACKAGE_NAME": "ehodzh.growControl"
+      "PACKAGE_NAME": "hodzh.growControl"
     },
     "cordova-plugin-bluetooth-serial": {
-      "PACKAGE_NAME": "ehodzh.growControl"
+      "PACKAGE_NAME": "hodzh.growControl"
     }
   },
   "dependent_plugins": {}

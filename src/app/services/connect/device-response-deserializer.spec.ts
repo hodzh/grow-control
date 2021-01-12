@@ -3,6 +3,9 @@ import { cold } from 'jest-marbles';
 import { DeviceIOMarker } from '../../model/device-io';
 import { deviceResponseMeta, structMeta } from '../../model/device-io-meta';
 import { DeviceResponseType } from '../../model/device-response-type';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { TestBed } from '@angular/core/testing';
 
 enum TestEnum1 {
   test1 = 1,
@@ -15,7 +18,15 @@ enum TestEnum1 {
 
 // tslint:disable:no-bitwise
 describe('DeviceResponseDeserializer', () => {
+  let store: MockStore;
+
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore(),
+      ],
+    });
+    store = TestBed.inject(MockStore);
   });
 
   describe('simple cases', () => {
@@ -34,9 +45,14 @@ describe('DeviceResponseDeserializer', () => {
           DeviceIOMarker.endMessage | 25,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { byte: { type: 'uint8' } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { byte: { type: 'uint8' } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { byte: 2 } };
       const response2 = { type: 1, payload: { byte: 128 } };
@@ -52,10 +68,15 @@ describe('DeviceResponseDeserializer', () => {
         e: new Uint8Array([DeviceIOMarker.payloadMask & 0b0001100, DeviceIOMarker.payloadMask & 0b0000000]).buffer,
         f: new Uint8Array([DeviceIOMarker.endMessage | 60]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { word: { type: 'uint16' } },
-        test4: { word: { type: 'uint16' } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { word: { type: 'uint16' } },
+          test4: { word: { type: 'uint16' } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { word: 0b00001100000010 } };
       const response2 = { type: 4, payload: { word: 0b00011000000101 } };
@@ -78,10 +99,15 @@ describe('DeviceResponseDeserializer', () => {
           DeviceIOMarker.payloadMask & 0b001010, DeviceIOMarker.payloadMask & 0b000000, DeviceIOMarker.endMessage | 34,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { dword: { type: 'uint32' } },
-        test2: { dword: { type: 'uint32' } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { dword: { type: 'uint32' } },
+          test2: { dword: { type: 'uint32' } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { dword: 0x02030405 } };
       const response2 = { type: 6, payload: { dword: 0x0708090A } };
@@ -94,9 +120,14 @@ describe('DeviceResponseDeserializer', () => {
         b: new Uint8Array([DeviceIOMarker.payloadMask & 0b001100, DeviceIOMarker.payloadMask & 0b000000]).buffer,
         c: new Uint8Array([DeviceIOMarker.endMessage | 51]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { obj: { type: 'object', itemMeta: { word: { type: 'uint16' } } } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { obj: { type: 'object', itemMeta: { word: { type: 'uint16' } } } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { obj: { word: 0x0203 } } };
       const expected = cold('---a', { a: response1 });
@@ -108,9 +139,14 @@ describe('DeviceResponseDeserializer', () => {
         b: new Uint8Array([DeviceIOMarker.payloadMask & 0b001100, DeviceIOMarker.payloadMask & 0b000000]).buffer,
         c: new Uint8Array([DeviceIOMarker.endMessage | 51]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { list: { type: 'list', length: 2, itemMeta: { byte: { type: 'uint8' } } } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { list: { type: 'list', length: 2, itemMeta: { byte: { type: 'uint8' } } } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { list: [{ byte: 2 }, { byte: 3 }] } };
       const expected = cold('---a', { a: response1 });
@@ -122,9 +158,14 @@ describe('DeviceResponseDeserializer', () => {
         b: new Uint8Array([DeviceIOMarker.payloadMask & 0b001100, DeviceIOMarker.payloadMask & 0b000000]).buffer,
         c: new Uint8Array([DeviceIOMarker.endMessage | 51]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { list: { type: 'uint8[]', length: 2 } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { list: { type: 'uint8[]', length: 2 } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { list: [2, 3] } };
       const expected = cold('---a', { a: response1 });
@@ -139,9 +180,14 @@ describe('DeviceResponseDeserializer', () => {
           DeviceIOMarker.payloadMask & 0b000000, DeviceIOMarker.endMessage | 51,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { list: { type: 'uint16[]', length: 2 } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { list: { type: 'uint16[]', length: 2 } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { list: [0x0203, 0x0405] } };
       const expected = cold('---a', { a: response1 });
@@ -161,9 +207,14 @@ describe('DeviceResponseDeserializer', () => {
           DeviceIOMarker.payloadMask & 0b000000, DeviceIOMarker.endMessage | 27,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { list: { type: 'uint32[]', length: 2 } },
-      }, {}, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { list: { type: 'uint32[]', length: 2 } },
+        },
+        {},
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { list: [0x02030405, 0x0708090A] } };
       const expected = cold('-----a', { a: response1 });
@@ -178,11 +229,16 @@ describe('DeviceResponseDeserializer', () => {
           DeviceIOMarker.endMessage | 46,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { struct: 'struct' },
-      }, {
-        struct: { byte: { type: 'uint8' } },
-      }, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { struct: 'struct' },
+        },
+        {
+          struct: { byte: { type: 'uint8' } },
+        },
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { struct: { byte: 2 } } };
       const expected = cold('-a', { a: response1 });
@@ -193,18 +249,22 @@ describe('DeviceResponseDeserializer', () => {
     it('should skip until begin message', () => {
       const rawData$ = cold('-a', {
         a: new Uint8Array([
-          // DeviceIOMarker.payloadMask & 2,
           DeviceIOMarker.beginMessage | 1,
           2,
           0,
           DeviceIOMarker.endMessage | 46,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer({
-        test1: { struct: 'struct' },
-      }, {
-        struct: { byte: { type: 'uint8' } },
-      }, TestEnum1);
+      const deserializer = new DeviceResponseDeserializer(
+        {
+          test1: { struct: 'struct' },
+        },
+        {
+          struct: { byte: { type: 'uint8' } },
+        },
+        TestEnum1,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response1 = { type: 1, payload: { struct: { byte: 2 } } };
       const expected = cold('-a', { a: response1 });
@@ -236,7 +296,12 @@ describe('DeviceResponseDeserializer', () => {
         ]).buffer,
         e: new Uint8Array([DeviceIOMarker.endMessage | 52]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer(deviceResponseMeta, structMeta, DeviceResponseType);
+      const deserializer = new DeviceResponseDeserializer(
+        deviceResponseMeta,
+        structMeta,
+        DeviceResponseType,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response = {
         type: DeviceResponseType.program,
@@ -279,13 +344,16 @@ describe('DeviceResponseDeserializer', () => {
           244,
         ]).buffer,
       });
-      const deserializer = new DeviceResponseDeserializer(deviceResponseMeta, structMeta, DeviceResponseType);
+      const deserializer = new DeviceResponseDeserializer(
+        deviceResponseMeta,
+        structMeta,
+        DeviceResponseType,
+        store,
+      );
       const response$ = rawData$.pipe(deserializer.mapRaw);
       const response = {
         type: DeviceResponseType.program,
-        payload: {
-
-        },
+        payload: {},
       };
       const expected = cold('---a', { a: response });
       expect(response$).toBeObservable(expected);

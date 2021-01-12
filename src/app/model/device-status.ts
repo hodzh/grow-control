@@ -25,17 +25,6 @@ export enum FertigateState {
   done,
 }
 
-export interface DeviceStatus {
-  state: number;
-  cmdState: number;
-  valve: number;
-  flow: number;
-  volume: number;
-  totalVolume: number;
-  mix: number;
-  dose: number;
-}
-
 export enum ErrorCode {
   pumpIn = 1,
   dose,

@@ -7,6 +7,7 @@
 #include "ScheduleControl.h"
 #include "ProgramTimerControl.h"
 #include "GrowControlState.h"
+#include "PumpState.h"
 
 // asynchronous callback of non blocking operation
 class GrowControl;
@@ -36,6 +37,8 @@ public:
 
     void fertigateStart(uint8_t programId, CmdStopCallback scb);
     void fertigateLoop(void);
+    void fertigatePumpInStop(uint8_t errorCode);
+    void fertigateStepStop(uint8_t errorCode);
 
     void mixDoseStart(CmdStopCallback scb);
     void mixDoseLoop(void);
@@ -174,6 +177,7 @@ public:
     void cmdMix(void);
     void cmdDoseMix(void);
     void cmdDose(void);
+    void cmdDoseStop(uint8_t errorCode);
 
     ResponseStatus _status;
     uint8_t _errorCode;

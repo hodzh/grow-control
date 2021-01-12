@@ -89,7 +89,7 @@ struct DateTime {
     uint8_t month;
     uint8_t year;
 };
-// length 11 bytes
+// length 13 bytes
 struct DeviceStatus {
     uint8_t state;
     uint8_t cmdState;
@@ -98,6 +98,8 @@ struct DeviceStatus {
     uint16_t volume;
     uint16_t totalVolume;
     uint16_t mix;
+    uint8_t doseId;
+    uint8_t valveId;
 };
 // length 567 bytes
 struct Settings {
@@ -128,7 +130,7 @@ struct ResponseCommandSuccess {
 struct ResponseLog {
     uint8_t code;
 };
-// length 11 bytes
+// length 13 bytes
 struct ResponseStatus {
     uint8_t state;
     uint8_t cmdState;
@@ -137,6 +139,8 @@ struct ResponseStatus {
     uint16_t volume;
     uint16_t totalVolume;
     uint16_t mix;
+    uint8_t doseId;
+    uint8_t valveId;
 };
 // length 1 bytes
 struct ResponseError {

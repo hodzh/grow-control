@@ -27,7 +27,7 @@ export class ManualControlComponent {
           return;
         }
         this.store.dispatch(new ActionConnectRequest(
-          { type: DeviceRequestType.fertigate, payload: { programId: 0 } }));
+          { type: DeviceRequestType.fertigate, payload: { programId } }));
       });
   }
 
@@ -38,7 +38,7 @@ export class ManualControlComponent {
           return;
         }
         this.store.dispatch(new ActionConnectRequest(
-          { type: DeviceRequestType.pumpIn, payload: { programId: 0 } }));
+          { type: DeviceRequestType.pumpIn, payload: { programId } }));
       });
   }
 

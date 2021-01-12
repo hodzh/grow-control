@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DeviceState, DeviceStatus, FertigateState } from '../../../model/device-status';
+import { DeviceState, FertigateState } from '../../../model/device-status';
 import { Store } from '@ngrx/store';
 import { ActionConnectRequest } from '../../../store/connect/connect.reducer';
 import { DeviceRequestType } from '../../../model/device-request-type';
+import { DeviceStatus } from '../../../auto/struct';
 
 @Component({
   selector: 'app-status',

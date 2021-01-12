@@ -2,72 +2,67 @@
   <ng-container *ngSwitchCase="DeviceState.fertigate">
     <ng-container [ngSwitch]="status.cmdState">
       <ng-container *ngSwitchCase="FertigateState.pumpIn">
-        <ng-container *ngTemplateOutlet="pumpIn"></ng-container>
+        <ng-container *ngTemplateOutlet="pumpInTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.mixDose">
-        <mat-icon svgIcon="water-pump"></mat-icon>
+        <ng-container *ngTemplateOutlet="mixDoseTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.dose">
-        dose
+        <ng-container *ngTemplateOutlet="doseTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.mix">
-        <mat-icon svgIcon="water-pump"></mat-icon>
+        <ng-container *ngTemplateOutlet="mixTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.irrigate">
-        <ng-container *ngTemplateOutlet="pumpOut"></ng-container>
+        <ng-container *ngTemplateOutlet="pumpOutTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.irrigateFinish">
-        <ng-container *ngTemplateOutlet="pumpOut"></ng-container>
+        <ng-container *ngTemplateOutlet="pumpOutTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.washPumpIn">
-        <ng-container *ngTemplateOutlet="pumpIn"></ng-container>
+        <ng-container *ngTemplateOutlet="pumpInTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.washMix">
-        <mat-icon svgIcon="water-pump"></mat-icon>
+        <ng-container *ngTemplateOutlet="mixTemplate"></ng-container>
       </ng-container>
       <ng-container *ngSwitchCase="FertigateState.wash">
-        <mat-icon svgIcon="water-pump"></mat-icon>
+        <ng-container *ngTemplateOutlet="pumpOutTemplate"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        Unknown state
       </ng-container>
     </ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.irrigate">
-    irrigate
-    <ng-container *ngTemplateOutlet="pumpOut"></ng-container>
+    <ng-container *ngTemplateOutlet="pumpOutTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.wash">
-    wash
-    <ng-container *ngTemplateOutlet="pumpOut"></ng-container>
+    <ng-container *ngTemplateOutlet="pumpOutTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.pumpIn">
-    <ng-container *ngTemplateOutlet="pumpIn"></ng-container>
-  </ng-container>
-  <ng-container *ngSwitchCase="DeviceState.compote">
-    compote
-  </ng-container>
-  <ng-container *ngSwitchCase="DeviceState.washCompote">
-    washCompote
+    <ng-container *ngTemplateOutlet="pumpInTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.mixer">
-    mixer
+    <ng-container *ngTemplateOutlet="mixTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.dose">
-    dose
+    <ng-container *ngTemplateOutlet="doseTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.doseMixer">
-    doseMixer
+    <ng-container *ngTemplateOutlet="mixTemplate"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.idle">
-    idle
+    Idle
   </ng-container>
   <ng-container *ngSwitchCase="DeviceState.error">
-    Error
-    <button type="button" mat-button (click)="onReset()">Reset</button>
+    Error state
+    <button type="button" mat-button (click)="onReset()">Reset error</button>
   </ng-container>
   <ng-container *ngSwitchDefault>
-    Unknown
+    Unknown state
   </ng-container>
 </ng-container>
-<ng-template #pumpIn>
+<ng-template #pumpInTemplate>
   <div class="row">
     <div class="col-12">
       <mat-icon svgIcon="water-pump"></mat-icon> Pump in
@@ -90,10 +85,18 @@
     </div>
   </div>
 </ng-template>
-<ng-template #pumpOut>
+<ng-template #pumpOutTemplate>
   <div class="row">
     <div class="col-12">
       <mat-icon svgIcon="fountain"></mat-icon> Pump out
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 text-right">
+      Flow
+    </div>
+    <div class="col-6 text-left">
+      {{status.valveId + 1}}
     </div>
   </div>
   <div class="row">
@@ -110,6 +113,51 @@
     </div>
     <div class="col-6 text-left">
       {{status.totalVolume | number: '1.0-0'}} mL
+    </div>
+  </div>
+</ng-template>
+<ng-template #mixTemplate>
+  <div class="row">
+    <div class="col-12">
+      <mat-icon svgIcon="water-pump"></mat-icon> Mix
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 text-right">
+      ETA
+    </div>
+    <div class="col-6 text-left">
+      {{status.mix}} seconds
+    </div>
+  </div>
+</ng-template>
+<ng-template #mixDoseTemplate>
+  <div class="row">
+    <div class="col-12">
+      <mat-icon svgIcon="water-pump"></mat-icon> Mix dose
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 text-right">
+      ETA
+    </div>
+    <div class="col-6 text-left">
+      {{status.mix}} seconds
+    </div>
+  </div>
+</ng-template>
+<ng-template #doseTemplate>
+  <div class="row">
+    <div class="col-12">
+      <mat-icon svgIcon="water-pump"></mat-icon> Dose
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 text-right">
+      Doze #
+    </div>
+    <div class="col-6 text-left">
+      {{status.doseId}}
     </div>
   </div>
 </ng-template>

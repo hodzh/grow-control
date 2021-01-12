@@ -91,6 +91,8 @@ export const structMeta: { [key: string]: DeviceIOMeta } = {
     volume: { type: 'uint16' },
     totalVolume: { type: 'uint16' },
     mix: { type: 'uint16' },
+    doseId: { type: 'uint8' },
+    valveId: { type: 'uint8' },
   },
   settings: {
     program: {

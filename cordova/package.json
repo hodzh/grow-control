@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "android": "cordova run android",
     "android.build": "cordova build android",
+    "android.build.prod": "cordova build android --release",
     "adb": "adb tcpip 5555 && adb connect 192.168.1.61:5555"
   },
   "keywords": [
@@ -16,6 +17,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
+    "cordova": "^10.0.0",
     "cordova-android": "9.0.0",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-bluetooth-serial": "^0.4.7",

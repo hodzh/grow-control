@@ -17,7 +17,7 @@
        under the License.
  */
 
-package ehodzh.growControl;
+package hodzh.growControl;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
