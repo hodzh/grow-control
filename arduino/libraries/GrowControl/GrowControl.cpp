@@ -30,6 +30,8 @@ void GrowControl::setup(void) {
     _status.state = CMD_IDLE;
     _errorCode = 0;
     _stackCount = 0;
+    _lowLevelSensorState = 0;
+    _highLevelSensorState = 0;
     resetStatus();
     // check settings
     EEPROMemory::setup();
@@ -58,7 +60,7 @@ void GrowControl::setup(void) {
         pinMode(EEPROMemory::getPinFlowSensor(i), INPUT_PULLUP);
     }
     for (uint8_t i = 0; i < LEVEL_SENSOR_COUNT; i++) {
-        pinMode(EEPROMemory::getPinLevelSensor(i), INPUT_PULLUP);
+        pinMode(EEPROMemory::getPinLevelSensor(i), INPUT);
     }
 #if RTC_COUNT == 1
     // init real time control module
@@ -153,6 +155,24 @@ void GrowControl::fatalError(uint8_t errorCode) {
     allOff();
 }
 
+void GrowControl::checkLevels() {
+    uint8_t state = digitalRead(EEPROMemory::getPinLevelSensor(LEVEL_SENSOR_LOW));
+    if (state != _lowLevelSensorState) {
+        _lowLevelSensorState = state;
+        if (!_lowLevelSensorState) {
+            // tank is empty
+        }
+    }
+    state = digitalRead(EEPROMemory::getPinLevelSensor(LEVEL_SENSOR_HIGH));
+    if (state != _highLevelSensorState) {
+        _highLevelSensorState = state;
+        if (_lowLevelSensorState) {
+            // tank is full
+
+        }
+    }
+}
+
 void GrowControl::fertigateStart(uint8_t programId, CmdStopCallback scb) {
     SERIAL_PWRITE("fertigate command ");
     SERIAL_WRITELN(programId);
@@ -190,10 +210,12 @@ void GrowControl::fertigateLoop(void) {
             mixStart(0, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_IRRIGATE:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 0, &GrowControl::fertigateStepStop);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 0,
+                          IRRIGATE_MODE_DEFAULT, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_IRRIGATE_FINISH:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, &GrowControl::fertigateStepStop);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1,
+                          IRRIGATE_MODE_STOP_IF_COMPLETE, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_WASH_PUMP_IN:
             pumpStart(
@@ -207,7 +229,8 @@ void GrowControl::fertigateLoop(void) {
             mixStart(1, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_WASH:
-            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1, &GrowControl::fertigateStepStop);
+            irrigateStart(state.programId, state.compoteId, state.compoteDailyId, 1,
+                          IRRIGATE_MODE_STOP_IF_COMPLETE, &GrowControl::fertigateStepStop);
             break;
         case FERTIGATE_STATE_DONE:
             SERIAL_PWRITE("fertigate stop");
@@ -275,6 +298,10 @@ void GrowControl::doseStart(
 }
 
 void GrowControl::doseLoop(void) {
+    if (_status.doseId >= DOSE_COUNT) {
+        SERIAL_PWRITELN("dose stop");
+        invokeStop(0);
+    }
     DoseState &state = getState<DoseState>();
     SERIAL_PWRITE("dose loop ");
     SERIAL_WRITELN(_status.doseId);
@@ -285,7 +312,7 @@ void GrowControl::doseLoop(void) {
     uint16_t dose = compoteDaily.dose[_status.doseId];
     if (!dose) {
         SERIAL_PWRITELN("dose skip");
-        doseStop(0);
+        _status.doseId += 1;
         return;
     }
     setStateDose(_status.doseId, 1);
@@ -296,63 +323,61 @@ void GrowControl::doseLoop(void) {
 }
 
 void GrowControl::doseStop(uint8_t errorCode) {
-    DoseState &state = getState<DoseState>();
-    setStateDose(_status.doseId, 0);
     SERIAL_PWRITELN("dose timer stop");
+    setStateDose(_status.doseId, 0);
     _status.doseId += 1;
-    if (_status.doseId >= DOSE_COUNT) {
-        SERIAL_PWRITELN("dose stop");
-        invokeStop(0);
-    }
 }
 
-void GrowControl::mixStart(uint8_t mode, CmdStopCallback scb) {
+void GrowControl::mixStart(uint8_t washing, CmdStopCallback scb) {
     startState<MixerState>(&GrowControl::mixLoop, scb);
     MixerState &state = getState<MixerState>();
     Mixer settings;
     EEPROMemory::getMixer(0, settings);
-    unsigned long seconds = mode ? settings.washSeconds : settings.seconds;
-    if (!seconds) {
-        SERIAL_PWRITELN("mix end");
+    _status.mix = washing ? settings.washSeconds : settings.seconds;
+    if (!_status.mix) {
+        SERIAL_PWRITELN("mix skip");
         invokeStop(0);
         return;
     }
     SERIAL_PWRITELN("mix start");
     setStateMixer(0, 1);
-    _status.mix = seconds;
-    timerStart(1000UL, 0);
 }
 
 void GrowControl::mixLoop(void) {
-    MixerState &state = getState<MixerState>();
-    _status.mix -= 1;
+    if (!_status.mix) {
+        setStateMixer(0, 0);
+        SERIAL_PWRITELN("mix stop");
+        invokeStop(0);
+    }
     SERIAL_PWRITE("mix loop ");
     SERIAL_WRITELN(_status.mix);
-    if (_status.mix) {
-        timerStart(1000UL, 0);
-        return;
-    }
-    setStateMixer(0, 0);
-    SERIAL_PWRITELN("mix stop");
-    invokeStop(0);
+    _status.mix -= 1;
+    timerStart(1000UL, 0);
 }
 
 void GrowControl::irrigateStart(
     uint8_t programId,
     uint8_t compoteId,
     uint8_t compoteDailyId,
+    uint8_t washing,
     uint8_t mode,
     CmdStopCallback scb
 ) {
-    startState<IrrigateState>(&GrowControl::irrigateLoop, scb);
     Program program;
     EEPROMemory::getProgram(programId, program);
+    if (!bitCount(program.valves, VALVE_COUNT / 8)) {
+        SERIAL_PWRITELN("irrigate skip");
+        return;
+    }
+    startState<IrrigateState>(&GrowControl::irrigateLoop, scb);
     CompoteDaily compoteDaily;
     EEPROMemory::getCompoteDaily(compoteId, compoteDailyId, compoteDaily);
     IrrigateState &state = getState<IrrigateState>();
     memcpy(state.valves, program.valves, VALVE_COUNT / 8);
     _status.valveId = 0xFF;
-    state.volume = mode ? compoteDaily.washVolume : compoteDaily.volume;
+    resetErrorValves();
+    state.volume = washing ? compoteDaily.washVolume : compoteDaily.volume;
+    state.mode = mode;
     SERIAL_PWRITE("irrigate start ");
     for (uint8_t i = 0; i < VALVE_COUNT / 8; ++i) {
         SERIAL_WRITE(state.valves[i]);
@@ -367,14 +392,51 @@ void GrowControl::irrigateLoop(void) {
     SERIAL_WRITELN(_status.valveId);
     setNextValve();
     if (_status.valveId >= VALVE_COUNT) {
-        SERIAL_PWRITELN("irrigate done");
-        invokeStop(0);
-        return;
+        if (state.mode == IRRIGATE_MODE_DEFAULT) {
+            SERIAL_PWRITELN("irrigate done");
+            invokeStop(0);
+            if (bitCount(_errorValves, VALVE_COUNT / 8)) {
+
+            }
+            return;
+        }
+        if (state.mode == IRRIGATE_MODE_STOP_IF_COMPLETE) {
+            if (bitCount(state.valves, VALVE_COUNT / 8) ==
+                    bitCount(_errorValves, VALVE_COUNT / 8)) {
+                SERIAL_PWRITELN("irrigate done");
+                invokeStop(0);
+                return;
+            }
+        }
+        setNextValve();
     }
     pumpStart(PUMP_OUT, FLOW_SENSOR_OUT, state.volume, &GrowControl::irrigateStop);
 }
 
 void GrowControl::irrigateStop(uint8_t errorCode) {
+    if (!errorCode) {
+        return;
+    }
+    _errorValves[_status.valveId / 8] |=
+        _errorValves[_status.valveId / 8] | ((uint8_t) 1 << (_status.valveId % 8));
+}
+
+uint8_t GrowControl::bitCount(const uint8_t* bytes, uint8_t length) {
+    uint8_t count = 0;
+    for (uint8_t i = 0; i < length; ++i) {
+        uint8_t b = bytes[i];
+        while (b) {
+            count += b & 1;
+            b >>= 1;
+        }
+    }
+    return count;
+}
+
+void GrowControl::resetErrorValves() {
+    for (uint8_t i = 0; i < VALVE_COUNT / 8; ++i) {
+        _errorValves[i] = 0;
+    }
 }
 
 void GrowControl::pumpStart(
@@ -437,15 +499,11 @@ void GrowControl::timerStart(unsigned long ms, CmdStopCallback scb) {
 void GrowControl::timerLoop(void) {
     TimerState &state = getState<TimerState>();
     if (millis() - state.start < state.ms) {
+        // continue
         return;
     }
-    timerStop(0);
-}
-
-void GrowControl::timerStop(uint8_t errorCode) {
-    SERIAL_PWRITE("timer stop ");
-    SERIAL_WRITELN(errorCode);
-    invokeStop(errorCode);
+    SERIAL_PWRITELN("timer stop");
+    invokeStop(0);
 }
 
 void GrowControl::checkState(void) {
@@ -724,26 +782,11 @@ void GrowControl::handleCommand(void) {
         case REQUEST_GET_DOSE:
             cmdGetDose();
             return;
-        case REQUEST_GET_PIN_PUMP:
-            cmdGetPinPump();
+        case REQUEST_GET_LEVEL_SENSOR:
+            cmdGetDose();
             return;
-        case REQUEST_GET_PIN_LEVEL_SENSOR:
-            cmdGetPinLevelSensor();
-            return;
-        case REQUEST_GET_PIN_FLOW_SENSOR:
-            cmdGetPinFlowSensor();
-            return;
-        case REQUEST_GET_PIN_DOSE:
-            cmdGetPinDose();
-            return;
-        case REQUEST_GET_PIN_MIXER:
-            cmdGetPinMixer();
-            return;
-        case REQUEST_GET_PIN_DOSE_MIXER:
-            cmdGetPinDoseMixer();
-            return;
-        case REQUEST_GET_PIN_VALVE:
-            cmdGetPinValve();
+        case REQUEST_GET_PIN:
+            cmdGetPin();
             return;
     }
     if (_status.state != CMD_IDLE) {
@@ -800,26 +843,11 @@ void GrowControl::handleCommand(void) {
         case REQUEST_SET_DOSE:
             cmdSetDose();
             return;
-        case REQUEST_SET_PIN_PUMP:
-            cmdSetPinPump();
+        case REQUEST_SET_LEVEL_SENSOR:
+            cmdSetLevelSensor();
             return;
-        case REQUEST_SET_PIN_FLOW_SENSOR:
-            cmdSetPinFlowSensor();
-            return;
-        case REQUEST_SET_PIN_LEVEL_SENSOR:
-            cmdSetPinLevelSensor();
-            return;
-        case REQUEST_SET_PIN_MIXER:
-            cmdSetPinMixer();
-            return;
-        case REQUEST_SET_PIN_DOSE:
-            cmdSetPinDose();
-            return;
-        case REQUEST_SET_PIN_DOSE_MIXER:
-            cmdSetPinDoseMixer();
-            return;
-        case REQUEST_SET_PIN_VALVE:
-            cmdSetPinValve();
+        case REQUEST_SET_PIN:
+            cmdSetPin();
             return;
         case REQUEST_SET_TIME:
             cmdSetTime();
@@ -1148,160 +1176,139 @@ void GrowControl::cmdSetDose(void) {
     );
 }
 
-void GrowControl::cmdGetPinPump(void) {
-    SERIAL_PWRITE("get pinpump ");
-    SERIAL_WRITELN(_control.getBuffer().getPinPump.index);
-    ResponsePinPump response;
-    response.index = _control.getBuffer().getPinPump.index;
-    response.value = EEPROMemory::getPinPump(_control.getBuffer().getPinPump.index);
+
+void GrowControl::cmdGetLevelSensor(void) {
+    SERIAL_PWRITE("get level sensor ");
+    SERIAL_WRITELN(_control.getBuffer().getLevelSensor.index);
+    ResponseLevelSensor response;
+    response.index = _control.getBuffer().getLevelSensor.index;
+    EEPROMemory::getLevelSensor(_control.getBuffer().getLevelSensor.index, response.value);
     _control.write(
-        RESPONSE_PIN_PUMP,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinPump)
+            RESPONSE_LEVEL_SENSOR,
+            reinterpret_cast<uint8_t *>(&response),
+            sizeof(ResponseLevelSensor)
     );
 }
 
-void GrowControl::cmdSetPinPump(void) {
-    SERIAL_PWRITE("set pinpump ");
-    SERIAL_WRITELN(_control.getBuffer().setPinPump.index);
-    EEPROMemory::setPinPump(
-        _control.getBuffer().setPinPump.index,
-        _control.getBuffer().setPinPump.value
+void GrowControl::cmdSetLevelSensor(void) {
+    SERIAL_PWRITE("set dose ");
+    SERIAL_WRITELN(_control.getBuffer().setLevelSensor.index);
+    EEPROMemory::setLevelSensor(
+            _control.getBuffer().setLevelSensor.index,
+            _control.getBuffer().setLevelSensor.value
     );
 }
 
-void GrowControl::cmdGetPinFlowSensor(void) {
-    SERIAL_PWRITE("get pin flow sensor ");
-    SERIAL_WRITELN(_control.getBuffer().getPinFlowSensor.index);
-    ResponsePinFlowSensor response;
-    response.index = _control.getBuffer().getPinFlowSensor.index;
-    response.value = EEPROMemory::getPinFlowSensor(_control.getBuffer().getPinFlowSensor.index);
-    _control.write(
-        RESPONSE_PIN_FLOW_SENSOR,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinFlowSensor)
-    );
-}
-
-void GrowControl::cmdSetPinFlowSensor(void) {
-    SERIAL_PWRITE("set pin flow sensor ");
-    SERIAL_WRITELN(_control.getBuffer().setPinFlowSensor.index);
-    EEPROMemory::setPinFlowSensor(
-        _control.getBuffer().setPinFlowSensor.index,
-        _control.getBuffer().setPinFlowSensor.value
-    );
-}
-
-void GrowControl::cmdGetPinLevelSensor(void) {
-    SERIAL_PWRITE("get pin level sensor ");
-    SERIAL_WRITELN(_control.getBuffer().getPinLevelSensor.index);
-    ResponsePinLevelSensor response;
-    response.index = _control.getBuffer().getPinLevelSensor.index;
-    response.value = EEPROMemory::getPinLevelSensor(_control.getBuffer().getPinLevelSensor.index);
-    _control.write(
-        RESPONSE_PIN_LEVEL_SENSOR,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinLevelSensor)
-    );
-}
-
-void GrowControl::cmdSetPinLevelSensor(void) {
-    SERIAL_PWRITE("set pin level sensor ");
-    SERIAL_WRITELN(_control.getBuffer().setPinLevelSensor.index);
-    EEPROMemory::setPinLevelSensor(
-        _control.getBuffer().setPinLevelSensor.index,
-        _control.getBuffer().setPinLevelSensor.value
-    );
-}
-
-void GrowControl::cmdGetPinMixer(void) {
-    SERIAL_PWRITE("get pinmixer ");
-    SERIAL_WRITELN(_control.getBuffer().getPinMixer.index);
-    ResponsePinMixer response;
-    response.index = _control.getBuffer().getPinMixer.index;
-    response.value = EEPROMemory::getPinMixer(_control.getBuffer().getPinMixer.index);
-    _control.write(
-        RESPONSE_PIN_MIXER,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinMixer)
-    );
-}
-
-void GrowControl::cmdSetPinMixer(void) {
-    SERIAL_PWRITE("set pinmixer ");
-    SERIAL_WRITELN(_control.getBuffer().setPinMixer.index);
-    EEPROMemory::setPinMixer(
-        _control.getBuffer().setPinMixer.index,
-        _control.getBuffer().setPinMixer.value
-    );
-}
-
-void GrowControl::cmdGetPinDose(void) {
-    SERIAL_PWRITE("get pindose ");
-    SERIAL_WRITELN(_control.getBuffer().getPinDose.index);
-    ResponsePinDose response;
-    response.index = _control.getBuffer().getPinDose.index;
-    response.value = EEPROMemory::getPinDose(_control.getBuffer().getPinDose.index);
-    _control.write(
-        RESPONSE_PIN_DOSE,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinDose)
-    );
-}
-
-void GrowControl::cmdSetPinDose(void) {
-    SERIAL_PWRITE("set pindose ");
-    SERIAL_WRITELN(_control.getBuffer().setPinDose.index);
-    EEPROMemory::setPinDose(
-        _control.getBuffer().setPinDose.index,
-        _control.getBuffer().setPinDose.value
-    );
-}
-
-void GrowControl::cmdGetPinDoseMixer(void) {
-    SERIAL_PWRITE("get pindosemixer ");
-    SERIAL_WRITELN(_control.getBuffer().getPinDoseMixer.index);
-    ResponsePinDoseMixer response;
-    response.index = _control.getBuffer().getPinDoseMixer.index;
-    response.value = EEPROMemory::getPinDoseMixer(_control.getBuffer().getPinDoseMixer.index);
-    _control.write(
-        RESPONSE_PIN_DOSE_MIXER,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinDoseMixer)
-    );
-}
-
-void GrowControl::cmdSetPinDoseMixer(void) {
-    SERIAL_PWRITE("set pindosemixer ");
-    SERIAL_WRITELN(_control.getBuffer().setPinDoseMixer.index);
-    EEPROMemory::setPinDoseMixer(
-        _control.getBuffer().setPinDoseMixer.index,
-        _control.getBuffer().setPinDoseMixer.value
-    );
-}
-
-void GrowControl::cmdGetPinValve(void) {
-    SERIAL_PWRITE("get pin valve ");
-    SERIAL_WRITELN(_control.getBuffer().getPinValve.index);
-    ResponsePinValve response;
-    response.index = _control.getBuffer().getPinValve.index;
-    response.value = EEPROMemory::getPinValve(_control.getBuffer().getPinValve.index);
-    _control.write(
-        RESPONSE_PIN_VALVE,
-        reinterpret_cast<uint8_t *>(&response),
-        sizeof(ResponsePinValve)
-    );
-}
-
-void GrowControl::cmdSetPinValve(void) {
-    SERIAL_PWRITE("set pin valve ");
-    SERIAL_WRITE(_control.getBuffer().setPinValve.index);
+void GrowControl::cmdGetPin(void) {
+    SERIAL_PWRITE("get pin ");
+    SERIAL_WRITE(_control.getBuffer().getPin.index);
     SERIAL_PWRITE(" ");
-    SERIAL_WRITELN(_control.getBuffer().setPinValve.value);
-    EEPROMemory::setPinValve(
-        _control.getBuffer().setPinValve.index,
-        _control.getBuffer().setPinValve.value
+    SERIAL_WRITELN(_control.getBuffer().getPin.index);
+    ResponsePin response;
+    response.type = _control.getBuffer().getPin.type;
+    response.index = _control.getBuffer().getPin.index;
+    switch(_control.getBuffer().setPin.type) {
+        case PIN_TYPE_PUMP:
+            response.value = EEPROMemory::getPinPump(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_VALVE:
+            response.value = EEPROMemory::getPinValve(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_MIXER:
+            response.value = EEPROMemory::getPinMixer(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_DOSE:
+            response.value = EEPROMemory::getPinDose(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_DOSE_MIXER:
+            response.value = EEPROMemory::getPinDoseMixer(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_FLOW_SENSOR:
+            response.value = EEPROMemory::getPinFlowSensor(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_LEVEL_SENSOR:
+            response.value = EEPROMemory::getPinLevelSensor(_control.getBuffer().getPin.index);
+            break;
+        case PIN_TYPE_RTC:
+            break;
+        case PIN_TYPE_DISPLAY:
+            break;
+        case PIN_TYPE_BUTTON:
+            break;
+        case PIN_TYPE_BEEPER:
+            response.value = EEPROMemory::getPinBeeper(_control.getBuffer().getPin.index);
+            break;
+    }
+    _control.write(
+            RESPONSE_PIN,
+            reinterpret_cast<uint8_t *>(&response),
+            sizeof(ResponsePin)
     );
+}
+
+void GrowControl::cmdSetPin(void) {
+    SERIAL_PWRITE("set pin ");
+    SERIAL_WRITE(_control.getBuffer().setPin.type);
+    SERIAL_PWRITE(" ");
+    SERIAL_WRITE(_control.getBuffer().setPin.index);
+    SERIAL_PWRITE(" ");
+    SERIAL_WRITELN(_control.getBuffer().setPin.value);
+    switch(_control.getBuffer().setPin.type) {
+        case PIN_TYPE_PUMP:
+            EEPROMemory::setPinPump(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_VALVE:
+            EEPROMemory::setPinValve(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_MIXER:
+            EEPROMemory::setPinMixer(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_DOSE:
+            EEPROMemory::setPinDose(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_DOSE_MIXER:
+            EEPROMemory::setPinMixer(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_FLOW_SENSOR:
+            EEPROMemory::setPinFlowSensor(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_LEVEL_SENSOR:
+            EEPROMemory::setPinLevelSensor(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+        case PIN_TYPE_RTC:
+            break;
+        case PIN_TYPE_DISPLAY:
+            break;
+        case PIN_TYPE_BUTTON:
+            break;
+        case PIN_TYPE_BEEPER:
+            EEPROMemory::setPinBeeper(
+                    _control.getBuffer().setPin.index,
+                    _control.getBuffer().setPin.value
+            );
+            break;
+    }
 }
 
 void GrowControl::cmdGetStatus(void) {
@@ -1353,6 +1360,7 @@ void GrowControl::cmdIrrigate(void) {
         compoteId,
         compoteDailyId,
         0,
+        IRRIGATE_MODE_DEFAULT,
         0
     );
 }
@@ -1370,6 +1378,7 @@ void GrowControl::cmdWash(void) {
         compoteId,
         compoteDailyId,
         1,
+        IRRIGATE_MODE_DEFAULT,
         0
     );
 }

@@ -15,6 +15,7 @@ export const deviceConfig = {
   levelSensorCount: 2,
   rtcCount: 1,
   buttonCount: 0,
+  beeperCount: 1,
 };
 
 export enum PumpType {

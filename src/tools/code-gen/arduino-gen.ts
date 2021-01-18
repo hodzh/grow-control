@@ -1,4 +1,3 @@
-import { DeviceRequestMeta, DeviceResponseMeta, deviceResponseMeta, structMeta } from '../../app/model/device-io-meta';
 import {DeviceIOMarker, getLength} from '../../app/model/device-io';
 import { FertigateState, DeviceState, ErrorCode } from '../../app/model/device-status';
 import {DeviceRequestType} from '../../app/model/device-request-type';
@@ -6,8 +5,10 @@ import {DeviceResponseType} from '../../app/model/device-response-type';
 import { deviceConfig, PumpType, FlowSensorType, LevelSensorType } from '../../app/model/device-config';
 import * as fs from 'fs';
 import { join } from 'path';
-import {deviceRequestMeta} from '../../app/model/device-io-meta';
-import { DevicePartType } from '../../app/model/device-parts';
+import { DevicePinType } from '../../app/model/device-parts';
+import { deviceRequestMeta, DeviceRequestMeta } from '../../app/services/connect/device-request-meta';
+import { deviceResponseMeta, DeviceResponseMeta } from '../../app/services/connect/device-response-meta';
+import { structMeta } from '../../app/services/connect/device-struct-meta';
 
 const outDir = join(__dirname, '..', '..', '..', 'arduino', 'libraries', 'GrowControlConfig');
 
@@ -37,7 +38,7 @@ function writeConfig() {
     stream.write(`\n`);
     writeEnum(stream, FertigateState, camelToSnake, 'FERTIGATE_STATE_');
     stream.write(`\n`);
-    writeEnum(stream, DevicePartType, camelToSnake, 'PART_TYPE_');
+    writeEnum(stream, DevicePinType, camelToSnake, 'PIN_TYPE_');
     stream.write(`\n`);
     stream.end();
   });

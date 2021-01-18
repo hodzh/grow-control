@@ -1,3 +1,5 @@
+import 'jest-date-mock';
+
 const storageMock = () => {
   let storage = {};
   return {

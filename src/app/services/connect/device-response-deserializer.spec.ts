@@ -1,11 +1,11 @@
 import { DeviceResponseDeserializer } from './device-response-deserializer';
 import { cold } from 'jest-marbles';
 import { DeviceIOMarker } from '../../model/device-io';
-import { deviceResponseMeta, structMeta } from '../../model/device-io-meta';
 import { DeviceResponseType } from '../../model/device-response-type';
-import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TestBed } from '@angular/core/testing';
+import { deviceResponseMeta } from './device-response-meta';
+import { structMeta } from './device-struct-meta';
 
 enum TestEnum1 {
   test1 = 1,

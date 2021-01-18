@@ -13,6 +13,7 @@ import {PinAssignmentModule} from './pin-assignment/pin-assignment.module';
 import {SettingsRoutingModule} from './settings-routing.module';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
+import { BackupModule } from './backup/backup.module';
 
 @NgModule({
   declarations: [SettingsComponent],
@@ -31,6 +32,7 @@ import {MatIconModule} from '@angular/material/icon';
     ScheduleListModule,
     MixerListModule,
     PinAssignmentModule,
+    BackupModule,
   ],
 })
 export class SettingsModule {

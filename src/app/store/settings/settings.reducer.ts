@@ -25,7 +25,7 @@ import {
   defaultSettings,
   defaultTimer,
 } from '../../model/default-settings';
-import { PinAssignment } from '../../model/device-parts';
+import { DevicePinType, PinAssignment } from '../../model/device-parts';
 import { deviceConfig } from '../../model/device-config';
 
 export enum SettingsActionTypes {
@@ -72,11 +72,19 @@ export enum SettingsActionTypes {
   REMOVE_MIXER = '[Settings] Remove mixer',
   LOAD_MIXER = '[Settings] Load mixer',
   UPDATE_MIXER = '[Settings] Update mixer',
+  ADD_LEVEL_SENSOR = '[Settings] Add level sensor',
+  CHANGE_LEVEL_SENSOR = '[Settings] Change level sensor',
+  REMOVE_LEVEL_SENSOR = '[Settings] Remove level sensor',
+  LOAD_LEVEL_SENSOR = '[Settings] Load level sensor',
+  UPDATE_LEVEL_SENSOR = '[Settings] Update level sensor',
   CHANGE_PIN_ASSIGNMENT = '[Settings] Change pin assignment',
   LOAD_PIN_ASSIGNMENT = '[Settings] Load pin assignment',
   UPDATE_PIN_ASSIGNMENT = '[Settings] Update pin assignment',
   SYNC = '[Settings] Sync',
   SYNC_END = '[Settings] Sync end',
+  BACKUP = '[Settings] Backup',
+  RESTORE = '[Settings] Restore',
+  BACKUP_REMOVE = '[Settings] Backup remove',
 }
 
 export class ActionSettingsInit implements Action {
@@ -373,6 +381,41 @@ export class ActionSettingsLoadMixer implements Action {
   }
 }
 
+export class ActionSettingsAddLevelSensor implements Action {
+  readonly type = SettingsActionTypes.ADD_LEVEL_SENSOR;
+
+  constructor() {
+  }
+}
+
+export class ActionSettingsChangeLevelSensor implements Action {
+  readonly type = SettingsActionTypes.CHANGE_LEVEL_SENSOR;
+
+  constructor(public readonly payload: { index: number, value: LevelSensor }) {
+  }
+}
+
+export class ActionSettingsRemoveLevelSensor implements Action {
+  readonly type = SettingsActionTypes.REMOVE_LEVEL_SENSOR;
+
+  constructor(public readonly payload: number) {
+  }
+}
+
+export class ActionSettingsUpdateLevelSensor implements Action {
+  readonly type = SettingsActionTypes.UPDATE_LEVEL_SENSOR;
+
+  constructor(public readonly payload: { index: number, value: LevelSensor }) {
+  }
+}
+
+export class ActionSettingsLoadLevelSensor implements Action {
+  readonly type = SettingsActionTypes.LOAD_LEVEL_SENSOR;
+
+  constructor() {
+  }
+}
+
 export class ActionSettingsLoadPinAssignment implements Action {
   readonly type = SettingsActionTypes.LOAD_PIN_ASSIGNMENT;
 
@@ -383,14 +426,14 @@ export class ActionSettingsLoadPinAssignment implements Action {
 export class ActionSettingsChangePinAssignment implements Action {
   readonly type = SettingsActionTypes.CHANGE_PIN_ASSIGNMENT;
 
-  constructor(public readonly payload: { key: string, index: number, value: number }) {
+  constructor(public readonly payload: { type: number, index: number, value: number }) {
   }
 }
 
 export class ActionSettingsUpdatePinAssignment implements Action {
   readonly type = SettingsActionTypes.UPDATE_PIN_ASSIGNMENT;
 
-  constructor(public readonly payload: { key: string, index: number, value: number }) {
+  constructor(public readonly payload: { type: number, index: number, value: number }) {
   }
 }
 
@@ -412,6 +455,27 @@ export class ActionSettingsSyncEnd implements Action {
   readonly type = SettingsActionTypes.SYNC_END;
 
   constructor() {
+  }
+}
+
+export class ActionSettingsBackup implements Action {
+  readonly type = SettingsActionTypes.BACKUP;
+
+  constructor(public payload: { name: string }) {
+  }
+}
+
+export class ActionSettingsRestore implements Action {
+  readonly type = SettingsActionTypes.RESTORE;
+
+  constructor(public payload: number) {
+  }
+}
+
+export class ActionSettingsBackupRemove implements Action {
+  readonly type = SettingsActionTypes.BACKUP_REMOVE;
+
+  constructor(public payload: number) {
   }
 }
 
@@ -458,19 +522,38 @@ export type SettingsActions =
   | ActionSettingsRemoveMixer
   | ActionSettingsUpdateMixer
   | ActionSettingsLoadMixer
+  | ActionSettingsAddLevelSensor
+  | ActionSettingsChangeLevelSensor
+  | ActionSettingsRemoveLevelSensor
+  | ActionSettingsUpdateLevelSensor
+  | ActionSettingsLoadLevelSensor
   | ActionSettingsChangePinAssignment
   | ActionSettingsLoadPinAssignment
   | ActionSettingsUpdatePinAssignment
   | ActionSettingsChangeName
   | ActionSettingsSync
   | ActionSettingsSyncEnd
+  | ActionSettingsBackup
+  | ActionSettingsRestore
+  | ActionSettingsBackupRemove
   ;
+
+export interface SettingsBackup {
+  name: string;
+  date: Date;
+  backup: {
+    settings: Settings;
+    pinAssignment: PinAssignment;
+    names: { [key in keyof Settings]: string[] };
+  };
+}
 
 export interface SettingsState {
   settings: Settings;
   pinAssignment: PinAssignment;
   names: { [key in keyof Settings]: string[] };
   sync: boolean;
+  backups: SettingsBackup[];
 }
 
 export const initialSettingsState: SettingsState = {
@@ -478,6 +561,7 @@ export const initialSettingsState: SettingsState = {
   pinAssignment: defaultPinAssignment(),
   names: defaultNames(),
   sync: false,
+  backups: [],
 };
 
 export const selectorSettings = state => state.settings as SettingsState;
@@ -497,6 +581,8 @@ export const selectorMixers = state => (state.settings as SettingsState).setting
 export const selectorMixer = index => state => (state.settings as SettingsState).settings.mixer[index];
 export const selectorDoses = state => (state.settings as SettingsState).settings.dose;
 export const selectorDose = index => state => (state.settings as SettingsState).settings.dose[index];
+export const selectorLevelSensors = state => (state.settings as SettingsState).settings.levelSensor;
+export const selectorLevelSensor = index => state => (state.settings as SettingsState).settings.levelSensor[index];
 export const selectorPinAssignment = state => (state.settings as SettingsState).pinAssignment as PinAssignment;
 export const selectorPinPump = index => state => (state.settings as SettingsState).pinAssignment.pump[index];
 export const selectorPinPumps = state => (state.settings as SettingsState).pinAssignment.pump;
@@ -512,8 +598,10 @@ export const selectorPinValve = index => state => (state.settings as SettingsSta
 export const selectorPinValves = state => (state.settings as SettingsState).pinAssignment.valve;
 export const selectorPinLevelSensor = index => state => (state.settings as SettingsState).pinAssignment.levelSensor[index];
 export const selectorPinLevelSensors = state => (state.settings as SettingsState).pinAssignment.levelSensor;
+export const selectorPinBeepers = state => (state.settings as SettingsState).pinAssignment.beeper;
 export const selectorNames = key => state => (state.settings as SettingsState).names[key];
 export const selectorSettingsSync = state => (state.settings as SettingsState).sync;
+export const selectorSettingsBackups = state => (state.settings as SettingsState).backups;
 
 export function settingsReducer(
   state: SettingsState = initialSettingsState,
@@ -593,6 +681,15 @@ export function settingsReducer(
       return state;
     case SettingsActionTypes.REMOVE_MIXER:
       return removeMixer(state, action.payload);
+    case SettingsActionTypes.ADD_LEVEL_SENSOR:
+      return addLevelSensor(state);
+    case SettingsActionTypes.CHANGE_LEVEL_SENSOR:
+    case SettingsActionTypes.UPDATE_LEVEL_SENSOR:
+      return changeLevelSensor(state, action.payload);
+    case SettingsActionTypes.LOAD_LEVEL_SENSOR:
+      return state;
+    case SettingsActionTypes.REMOVE_LEVEL_SENSOR:
+      return removeLevelSensor(state, action.payload);
     case SettingsActionTypes.LOAD_PIN_ASSIGNMENT:
       return state;
     case SettingsActionTypes.CHANGE_PIN_ASSIGNMENT:
@@ -602,6 +699,12 @@ export function settingsReducer(
       return { ...state, sync: true };
     case SettingsActionTypes.SYNC_END:
       return { ...state, sync: false };
+    case SettingsActionTypes.BACKUP:
+      return backup(state, action.payload);
+    case SettingsActionTypes.RESTORE:
+      return restore(state, action.payload);
+    case SettingsActionTypes.BACKUP_REMOVE:
+      return backupRemove(state, action.payload);
     default:
       return state;
   }
@@ -611,7 +714,7 @@ function updateState(state: SettingsState, newState: SettingsState) {
   if (!newState) {
     return state;
   }
-  const nextState = {
+  const nextState: SettingsState = {
     ...newState,
     settings: {
       program: fixArray(newState.settings.program, deviceConfig.programCount, defaultProgram),
@@ -629,11 +732,12 @@ function updateState(state: SettingsState, newState: SettingsState) {
       mixer: fixArray(newState.pinAssignment.mixer, deviceConfig.mixerCount, defaultPin),
       dose: fixArray(newState.pinAssignment.dose, deviceConfig.doseCount, defaultPin),
       valve: fixArray(newState.pinAssignment.valve, deviceConfig.valveCount, defaultPin),
-      doseMixer: newState.pinAssignment.doseMixer,
-      flowSensor: newState.pinAssignment.flowSensor,
-      rtc: newState.pinAssignment.rtc,
+      doseMixer: fixArray(newState.pinAssignment.doseMixer, deviceConfig.doseMixerCount, defaultPin),
+      flowSensor: fixArray(newState.pinAssignment.flowSensor, deviceConfig.flowSensorCount, defaultPin),
+      rtc: fixArray(newState.pinAssignment.rtc, deviceConfig.rtcCount, defaultPin),
       display: newState.pinAssignment.display,
-      button: newState.pinAssignment.button,
+      button: fixArray(newState.pinAssignment.button, deviceConfig.buttonCount, defaultPin),
+      beeper: fixArray(newState.pinAssignment.beeper, deviceConfig.beeperCount, defaultPin),
     },
   };
   return nextState;
@@ -859,6 +963,36 @@ function removeMixer(state: SettingsState, index: number): SettingsState {
   };
 }
 
+function addLevelSensor(state: SettingsState): SettingsState {
+  return {
+    ...state, settings: {
+      ...state.settings, levelSensor: [
+        ...state.settings.levelSensor, defaultLevelSensorSettings(),
+      ],
+    },
+  };
+}
+
+function changeLevelSensor(state: SettingsState, { index, value }: { index: number, value: LevelSensor }): SettingsState {
+  const levelSensor = state.settings.levelSensor.slice(0);
+  levelSensor[index] = value;
+  return {
+    ...state, settings: {
+      ...state.settings, levelSensor,
+    },
+  };
+}
+
+function removeLevelSensor(state: SettingsState, index: number): SettingsState {
+  const levelSensor = state.settings.levelSensor.slice(0);
+  levelSensor.splice(index, 1);
+  return {
+    ...state, settings: {
+      ...state.settings, levelSensor,
+    },
+  };
+}
+
 function addTimer(state: SettingsState): SettingsState {
   return {
     ...state, settings: {
@@ -918,9 +1052,52 @@ function removeSchedule(state: SettingsState, index: number): SettingsState {
   };
 }
 
-function changePinAssignment(state: SettingsState, { key, index, value }) {
-  const pins = state.pinAssignment[key].slice(0);
+function changePinAssignment(state: SettingsState, { type, index, value }): SettingsState {
+  const pins = state.pinAssignment[DevicePinType[type]].slice(0);
   pins[index] = value;
-  const pinAssignment = { ...state.pinAssignment, [key]: pins };
+  const pinAssignment = { ...state.pinAssignment, [DevicePinType[type]]: pins };
   return { ...state, pinAssignment };
+}
+
+function backup(state: SettingsState, { name }: { name: string }): SettingsState {
+  return {
+    ...state,
+    backups: [
+      {
+        name,
+        date: new Date(),
+        backup: {
+          settings: state.settings,
+          pinAssignment: state.pinAssignment,
+          names: state.names,
+        },
+      },
+      ...state.backups,
+    ],
+  };
+}
+
+function backupRemove(state: SettingsState, index: number): SettingsState {
+  const backups = state.backups.slice();
+  backups.splice(index, 1);
+  return {
+    ...state,
+    backups,
+  };
+}
+
+function restore(state: SettingsState, index: number): SettingsState {
+  const { backup } = state.backups[index];
+  return updateState(state, {
+    ...state,
+    settings: {
+      ...defaultSettings(),
+      ...backup.settings,
+    },
+    pinAssignment: {
+      ...defaultPinAssignment(),
+      ...backup.pinAssignment,
+    },
+    names: backup.names,
+  });
 }

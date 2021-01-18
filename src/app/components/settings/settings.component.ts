@@ -39,6 +39,11 @@ export class SettingsComponent {
       icon: 'eyedropper',
     },
     {
+      route: ['/', 'settings', 'level-sensor'],
+      title: 'Level sensor',
+      icon: 'hydraulic-oil-level',
+    },
+    {
       route: ['/', 'settings', 'mixer'],
       title: 'Mixer',
       icon: 'pinwheel',
@@ -47,6 +52,11 @@ export class SettingsComponent {
       route: ['/', 'settings', 'pin-assignment'],
       title: 'Pin Assignment',
       icon: 'chip',
+    },
+    {
+      route: ['/', 'settings', 'backup'],
+      title: 'Backup & restore',
+      icon: 'backup-restore',
     },
   ];
 

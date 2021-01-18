@@ -4,6 +4,7 @@ import { DeviceRequestType } from '../model/device-request-type';
 import {
   CompoteDaily,
   Dose,
+  LevelSensor,
   Mixer,
   Program,
   Pump,
@@ -158,93 +159,30 @@ export interface DeviceRequestSetDose {
     value: Dose;
   };
 }
-export interface DeviceRequestGetPinPump {
-  type: DeviceRequestType.getPinPump;
+export interface DeviceRequestGetLevelSensor {
+  type: DeviceRequestType.getLevelSensor;
   payload: {
     index: number;
   };
 }
-export interface DeviceRequestSetPinPump {
-  type: DeviceRequestType.setPinPump;
+export interface DeviceRequestSetLevelSensor {
+  type: DeviceRequestType.setLevelSensor;
   payload: {
     index: number;
-    value: number;
+    value: LevelSensor;
   };
 }
-export interface DeviceRequestGetPinFlowSensor {
-  type: DeviceRequestType.getPinFlowSensor;
+export interface DeviceRequestGetPin {
+  type: DeviceRequestType.getPin;
   payload: {
-    index: number;
-  };
-}
-export interface DeviceRequestSetPinFlowSensor {
-  type: DeviceRequestType.setPinFlowSensor;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceRequestGetPinLevelSensor {
-  type: DeviceRequestType.getPinLevelSensor;
-  payload: {
+    type: number;
     index: number;
   };
 }
-export interface DeviceRequestSetPinLevelSensor {
-  type: DeviceRequestType.setPinLevelSensor;
+export interface DeviceRequestSetPin {
+  type: DeviceRequestType.setPin;
   payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceRequestGetPinMixer {
-  type: DeviceRequestType.getPinMixer;
-  payload: {
-    index: number;
-  };
-}
-export interface DeviceRequestSetPinMixer {
-  type: DeviceRequestType.setPinMixer;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceRequestGetPinDose {
-  type: DeviceRequestType.getPinDose;
-  payload: {
-    index: number;
-  };
-}
-export interface DeviceRequestSetPinDose {
-  type: DeviceRequestType.setPinDose;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceRequestGetPinDoseMixer {
-  type: DeviceRequestType.getPinDoseMixer;
-  payload: {
-    index: number;
-  };
-}
-export interface DeviceRequestSetPinDoseMixer {
-  type: DeviceRequestType.setPinDoseMixer;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceRequestGetPinValve {
-  type: DeviceRequestType.getPinValve;
-  payload: {
-    index: number;
-  };
-}
-export interface DeviceRequestSetPinValve {
-  type: DeviceRequestType.setPinValve;
-  payload: {
+    type: number;
     index: number;
     value: number;
   };
@@ -374,20 +312,10 @@ export type DeviceRequest =
   | DeviceRequestSetMixer
   | DeviceRequestGetDose
   | DeviceRequestSetDose
-  | DeviceRequestGetPinPump
-  | DeviceRequestSetPinPump
-  | DeviceRequestGetPinFlowSensor
-  | DeviceRequestSetPinFlowSensor
-  | DeviceRequestGetPinLevelSensor
-  | DeviceRequestSetPinLevelSensor
-  | DeviceRequestGetPinMixer
-  | DeviceRequestSetPinMixer
-  | DeviceRequestGetPinDose
-  | DeviceRequestSetPinDose
-  | DeviceRequestGetPinDoseMixer
-  | DeviceRequestSetPinDoseMixer
-  | DeviceRequestGetPinValve
-  | DeviceRequestSetPinValve
+  | DeviceRequestGetLevelSensor
+  | DeviceRequestSetLevelSensor
+  | DeviceRequestGetPin
+  | DeviceRequestSetPin
   | DeviceRequestGetTime
   | DeviceRequestSetTime
   | DeviceRequestGetTemp

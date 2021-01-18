@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <div class="row px-0 align-items-center">
+    {{data.text}}
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="col-12 d-flex justify-content-end">
+  <button mat-raised-button color="accent" [mat-dialog-close]="true">Yes</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="false">Cancel</button>
+</mat-dialog-actions>

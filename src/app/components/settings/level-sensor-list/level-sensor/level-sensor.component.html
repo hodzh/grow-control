@@ -1,0 +1,8 @@
+<div>
+  <mat-slide-toggle
+    class="col-12"
+    [checked]="!!levelSensor.enable" (change)="onChange({enable: +$event.checked})"
+  >
+    Enable
+  </mat-slide-toggle>
+</div>

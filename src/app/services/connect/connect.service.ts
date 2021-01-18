@@ -6,11 +6,13 @@ import { DeviceRequestSerializer } from './device-request-serializer';
 import { DeviceResponse } from '../../auto/device-response';
 import { DeviceRequest } from '../../auto/device-request';
 import { DeviceResponseDeserializer } from './device-response-deserializer';
-import { deviceRequestMeta, deviceResponseMeta, structMeta } from '../../model/device-io-meta';
 import { DeviceRequestType } from '../../model/device-request-type';
 import { DeviceResponseType } from '../../model/device-response-type';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { deviceRequestMeta } from './device-request-meta';
+import { structMeta } from './device-struct-meta';
+import { deviceResponseMeta } from './device-response-meta';
 
 @Injectable({
   providedIn: 'root',

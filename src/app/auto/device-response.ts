@@ -4,6 +4,7 @@ import { DeviceResponseType } from '../model/device-response-type';
 import {
   CompoteDaily,
   Dose,
+  LevelSensor,
   Mixer,
   Program,
   Pump,
@@ -92,51 +93,17 @@ export interface DeviceResponseDose {
     value: Dose;
   };
 }
-export interface DeviceResponsePinPump {
-  type: DeviceResponseType.pinPump;
+export interface DeviceResponseLevelSensor {
+  type: DeviceResponseType.levelSensor;
   payload: {
     index: number;
-    value: number;
+    value: LevelSensor;
   };
 }
-export interface DeviceResponsePinFlowSensor {
-  type: DeviceResponseType.pinFlowSensor;
+export interface DeviceResponsePin {
+  type: DeviceResponseType.pin;
   payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceResponsePinLevelSensor {
-  type: DeviceResponseType.pinLevelSensor;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceResponsePinMixer {
-  type: DeviceResponseType.pinMixer;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceResponsePinDose {
-  type: DeviceResponseType.pinDose;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceResponsePinDoseMixer {
-  type: DeviceResponseType.pinDoseMixer;
-  payload: {
-    index: number;
-    value: number;
-  };
-}
-export interface DeviceResponsePinValve {
-  type: DeviceResponseType.pinValve;
-  payload: {
+    type: number;
     index: number;
     value: number;
   };
@@ -201,13 +168,8 @@ export type DeviceResponse =
   | DeviceResponsePump
   | DeviceResponseMixer
   | DeviceResponseDose
-  | DeviceResponsePinPump
-  | DeviceResponsePinFlowSensor
-  | DeviceResponsePinLevelSensor
-  | DeviceResponsePinMixer
-  | DeviceResponsePinDose
-  | DeviceResponsePinDoseMixer
-  | DeviceResponsePinValve
+  | DeviceResponseLevelSensor
+  | DeviceResponsePin
   | DeviceResponseTime
   | DeviceResponseTemp
   | DeviceResponseStatePump

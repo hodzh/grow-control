@@ -1,0 +1,28 @@
+<div class="w-100 mx-2 d-flex">
+  <mat-form-field class="flex-fill">
+    <mat-label>
+      Name
+    </mat-label>
+    <input matInput [(ngModel)]="name">
+  </mat-form-field>
+  <button class="mx-2" type="button" mat-button (click)="onSave()">
+    <mat-icon svgIcon="content-save"></mat-icon>
+    Save
+  </button>
+</div>
+<mat-list>
+  <mat-list-item *ngFor="let backup of backups$ | async; let index = index; trackBy: trackByIndex">
+    <div class="w-100 d-flex">
+      <div class="flex-fill">
+        {{backup.date | date: "YYYY-MM-dd HH:mm"}}
+        {{backup.name}}
+      </div>
+      <button type="button" mat-icon-button (click)="onLoad(index)">
+        <mat-icon svgIcon="download-circle-outline"></mat-icon>
+      </button>
+      <button type="button" mat-icon-button color="warn" (click)="onRemove(index)">
+        <mat-icon svgIcon="delete-forever-outline"></mat-icon>
+      </button>
+    </div>
+  </mat-list-item>
+</mat-list>

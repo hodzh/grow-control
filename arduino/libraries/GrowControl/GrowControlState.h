@@ -5,15 +5,16 @@
 #include "EEPROMemory.h"
 #include "SerialLog.h"
 
-enum IrrigateMode {
-    DEFAULT_MODE = 0,
-    STOP_ON_ERROR = 1,
-    STOP_IF_COMPLETE = 2,
+enum IrrigateMode: uint8_t {
+    IRRIGATE_MODE_DEFAULT = 0,
+    IRRIGATE_MODE_STOP_ON_ERROR = 1,
+    IRRIGATE_MODE_STOP_IF_COMPLETE = 2,
 };
 
 struct IrrigateState {
     uint8_t valves[VALVE_COUNT / 8];
     uint16_t volume;
+    uint8_t mode;
 };
 
 struct DoseState {

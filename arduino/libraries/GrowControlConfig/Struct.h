@@ -61,9 +61,10 @@ struct Pump {
     uint8_t pwm;
     uint16_t rate;
 };
-// length 1 bytes
+// length 2 bytes
 struct LevelSensor {
-    uint8_t beepSeconds;
+    uint8_t enable;
+    uint8_t seconds;
 };
 // length 7 bytes
 struct Mixer {
@@ -101,7 +102,7 @@ struct DeviceStatus {
     uint8_t doseId;
     uint8_t valveId;
 };
-// length 567 bytes
+// length 569 bytes
 struct Settings {
     Program program[4];
     Compote compote[2];
@@ -112,7 +113,7 @@ struct Settings {
     Mixer mixer[1];
     Dose dose[4];
 };
-// length 39 bytes
+// length 40 bytes
 struct PinAssignment {
     uint8_t pump[2];
     uint8_t flowSensor[2];
@@ -121,6 +122,7 @@ struct PinAssignment {
     uint8_t dose[4];
     uint8_t doseMixer[4];
     uint8_t valve[24];
+    uint8_t beeper[1];
 };
 // length 1 bytes
 struct ResponseCommandSuccess {
@@ -182,38 +184,14 @@ struct ResponseDose {
     uint8_t index;
     Dose value;
 };
-// length 2 bytes
-struct ResponsePinPump {
+// length 3 bytes
+struct ResponseLevelSensor {
     uint8_t index;
-    uint8_t value;
+    LevelSensor value;
 };
-// length 2 bytes
-struct ResponsePinFlowSensor {
-    uint8_t index;
-    uint8_t value;
-};
-// length 2 bytes
-struct ResponsePinLevelSensor {
-    uint8_t index;
-    uint8_t value;
-};
-// length 2 bytes
-struct ResponsePinMixer {
-    uint8_t index;
-    uint8_t value;
-};
-// length 2 bytes
-struct ResponsePinDose {
-    uint8_t index;
-    uint8_t value;
-};
-// length 2 bytes
-struct ResponsePinDoseMixer {
-    uint8_t index;
-    uint8_t value;
-};
-// length 2 bytes
-struct ResponsePinValve {
+// length 3 bytes
+struct ResponsePin {
+    uint8_t type;
     uint8_t index;
     uint8_t value;
 };
@@ -354,65 +332,22 @@ struct RequestSetDose {
     Dose value;
 };
 // length 1 bytes
-struct RequestGetPinPump {
+struct RequestGetLevelSensor {
     uint8_t index;
+};
+// length 3 bytes
+struct RequestSetLevelSensor {
+    uint8_t index;
+    LevelSensor value;
 };
 // length 2 bytes
-struct RequestSetPinPump {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinFlowSensor {
+struct RequestGetPin {
+    uint8_t type;
     uint8_t index;
 };
-// length 2 bytes
-struct RequestSetPinFlowSensor {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinLevelSensor {
-    uint8_t index;
-};
-// length 2 bytes
-struct RequestSetPinLevelSensor {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinMixer {
-    uint8_t index;
-};
-// length 2 bytes
-struct RequestSetPinMixer {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinDose {
-    uint8_t index;
-};
-// length 2 bytes
-struct RequestSetPinDose {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinDoseMixer {
-    uint8_t index;
-};
-// length 2 bytes
-struct RequestSetPinDoseMixer {
-    uint8_t index;
-    uint8_t value;
-};
-// length 1 bytes
-struct RequestGetPinValve {
-    uint8_t index;
-};
-// length 2 bytes
-struct RequestSetPinValve {
+// length 3 bytes
+struct RequestSetPin {
+    uint8_t type;
     uint8_t index;
     uint8_t value;
 };
@@ -511,20 +446,10 @@ union Request {
     RequestSetMixer setMixer;
     RequestGetDose getDose;
     RequestSetDose setDose;
-    RequestGetPinPump getPinPump;
-    RequestSetPinPump setPinPump;
-    RequestGetPinFlowSensor getPinFlowSensor;
-    RequestSetPinFlowSensor setPinFlowSensor;
-    RequestGetPinLevelSensor getPinLevelSensor;
-    RequestSetPinLevelSensor setPinLevelSensor;
-    RequestGetPinMixer getPinMixer;
-    RequestSetPinMixer setPinMixer;
-    RequestGetPinDose getPinDose;
-    RequestSetPinDose setPinDose;
-    RequestGetPinDoseMixer getPinDoseMixer;
-    RequestSetPinDoseMixer setPinDoseMixer;
-    RequestGetPinValve getPinValve;
-    RequestSetPinValve setPinValve;
+    RequestGetLevelSensor getLevelSensor;
+    RequestSetLevelSensor setLevelSensor;
+    RequestGetPin getPin;
+    RequestSetPin setPin;
     RequestGetTime getTime;
     RequestSetTime setTime;
     RequestGetTemp getTemp;
@@ -565,20 +490,10 @@ inline uint16_t getRequestSize(uint8_t type) {
     if (type == REQUEST_SET_MIXER) return sizeof(RequestSetMixer);
     if (type == REQUEST_GET_DOSE) return sizeof(RequestGetDose);
     if (type == REQUEST_SET_DOSE) return sizeof(RequestSetDose);
-    if (type == REQUEST_GET_PIN_PUMP) return sizeof(RequestGetPinPump);
-    if (type == REQUEST_SET_PIN_PUMP) return sizeof(RequestSetPinPump);
-    if (type == REQUEST_GET_PIN_FLOW_SENSOR) return sizeof(RequestGetPinFlowSensor);
-    if (type == REQUEST_SET_PIN_FLOW_SENSOR) return sizeof(RequestSetPinFlowSensor);
-    if (type == REQUEST_GET_PIN_LEVEL_SENSOR) return sizeof(RequestGetPinLevelSensor);
-    if (type == REQUEST_SET_PIN_LEVEL_SENSOR) return sizeof(RequestSetPinLevelSensor);
-    if (type == REQUEST_GET_PIN_MIXER) return sizeof(RequestGetPinMixer);
-    if (type == REQUEST_SET_PIN_MIXER) return sizeof(RequestSetPinMixer);
-    if (type == REQUEST_GET_PIN_DOSE) return sizeof(RequestGetPinDose);
-    if (type == REQUEST_SET_PIN_DOSE) return sizeof(RequestSetPinDose);
-    if (type == REQUEST_GET_PIN_DOSE_MIXER) return sizeof(RequestGetPinDoseMixer);
-    if (type == REQUEST_SET_PIN_DOSE_MIXER) return sizeof(RequestSetPinDoseMixer);
-    if (type == REQUEST_GET_PIN_VALVE) return sizeof(RequestGetPinValve);
-    if (type == REQUEST_SET_PIN_VALVE) return sizeof(RequestSetPinValve);
+    if (type == REQUEST_GET_LEVEL_SENSOR) return sizeof(RequestGetLevelSensor);
+    if (type == REQUEST_SET_LEVEL_SENSOR) return sizeof(RequestSetLevelSensor);
+    if (type == REQUEST_GET_PIN) return sizeof(RequestGetPin);
+    if (type == REQUEST_SET_PIN) return sizeof(RequestSetPin);
     if (type == REQUEST_GET_TIME) return sizeof(RequestGetTime);
     if (type == REQUEST_SET_TIME) return sizeof(RequestSetTime);
     if (type == REQUEST_GET_TEMP) return sizeof(RequestGetTemp);

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import {select, Store} from '@ngrx/store';
 import {
   ActionSettingsChangePinAssignment,
-  ActionSettingsLoadPinAssignment,
+  ActionSettingsLoadPinAssignment, selectorPinBeepers,
   selectorPinDoseMixers,
   selectorPinDoses,
   selectorPinFlowSensors, selectorPinLevelSensors,
@@ -12,7 +12,7 @@ import {
 } from '../../../store/settings/settings.reducer';
 import { Observable, Subject } from 'rxjs';
 import { deviceInfo, getAllPins } from '../../../model/device-info';
-import { devicePartTypeName } from '../../../model/device-parts';
+import { DevicePinType, devicePinTypeName } from '../../../model/device-parts';
 
 @Component({
   selector: 'app-pin-assignment',
@@ -27,7 +27,8 @@ export class PinAssignmentComponent implements OnInit, OnDestroy {
     .sort((a, b) => a.key - b.key)
   ;
   pinAssignment;
-  devicePartTypeName = devicePartTypeName;
+  devicePinType = DevicePinType;
+  devicePartTypeName = devicePinTypeName;
   pinValves$: Observable<number[]>;
   pinPumps$: Observable<number[]>;
   pinFlowSensors$: Observable<number[]>;
@@ -35,6 +36,7 @@ export class PinAssignmentComponent implements OnInit, OnDestroy {
   pinDoses$: Observable<number[]>;
   pinDoseMixers$: Observable<number[]>;
   pinLevelSensors$: Observable<number[]>;
+  pinBeeper$: Observable<number[]>;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -51,13 +53,14 @@ export class PinAssignmentComponent implements OnInit, OnDestroy {
     this.pinDoseMixers$ = this.store.pipe(select(selectorPinDoseMixers))
     this.pinValves$ = this.store.pipe(select(selectorPinValves))
     this.pinLevelSensors$ = this.store.pipe(select(selectorPinLevelSensors))
+    this.pinBeeper$ = this.store.pipe(select(selectorPinBeepers))
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
   }
 
-  onChange(key: string, index: number, value: number): void {
-    this.store.dispatch(new ActionSettingsChangePinAssignment({key, index, value}));
+  onChange(key: number, index: number, value: number): void {
+    this.store.dispatch(new ActionSettingsChangePinAssignment({type: key, index, value}));
   }
 }

@@ -3,15 +3,18 @@ import {
   initialSettingsState,
   settingsReducer,
 } from './settings.reducer';
+import { advanceTo } from 'jest-date-mock';
 
 describe('SettingsReducer', () => {
   describe('ActionSettingsInit', () => {});
   describe('ActionSettingsUpdate', () => {
     it('should update', () => {
+      advanceTo(new Date(2021, 1, 2, 3, 4, 5)); // reset to date time.
       const action = new ActionSettingsUpdate(initialSettingsState);
       const state = settingsReducer(null, action);
       expect(state).toMatchInlineSnapshot(`
         Object {
+          "backups": Array [],
           "names": Object {
             "compote": Array [
               "",
@@ -24,8 +27,8 @@ describe('SettingsReducer', () => {
               "",
             ],
             "levelSensor": Array [
-              "Min",
-              "Max",
+              "Low",
+              "High",
             ],
             "mixer": Array [
               "Compote",
@@ -59,6 +62,9 @@ describe('SettingsReducer', () => {
             ],
           },
           "pinAssignment": Object {
+            "beeper": Array [
+              0,
+            ],
             "button": Array [],
             "display": Array [],
             "dose": Array [
@@ -67,8 +73,16 @@ describe('SettingsReducer', () => {
               0,
               0,
             ],
-            "doseMixer": Array [],
-            "flowSensor": Array [],
+            "doseMixer": Array [
+              0,
+              0,
+              0,
+              0,
+            ],
+            "flowSensor": Array [
+              0,
+              0,
+            ],
             "levelSensor": Array [
               0,
               0,
@@ -80,7 +94,9 @@ describe('SettingsReducer', () => {
               0,
               0,
             ],
-            "rtc": Array [],
+            "rtc": Array [
+              0,
+            ],
             "valve": Array [
               0,
               0,
@@ -483,10 +499,12 @@ describe('SettingsReducer', () => {
             ],
             "levelSensor": Array [
               Object {
-                "beepSeconds": 1,
+                "enable": 0,
+                "seconds": 1,
               },
               Object {
-                "beepSeconds": 1,
+                "enable": 0,
+                "seconds": 1,
               },
             ],
             "mixer": Array [
@@ -501,9 +519,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 13,
+                  "day": 17,
                   "month": 0,
-                  "wday": 3,
+                  "wday": 0,
                   "year": 51,
                 },
                 "valves": Array [
@@ -515,9 +533,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 13,
+                  "day": 17,
                   "month": 0,
-                  "wday": 3,
+                  "wday": 0,
                   "year": 51,
                 },
                 "valves": Array [
@@ -529,9 +547,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 13,
+                  "day": 17,
                   "month": 0,
-                  "wday": 3,
+                  "wday": 0,
                   "year": 51,
                 },
                 "valves": Array [
@@ -543,9 +561,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 13,
+                  "day": 17,
                   "month": 0,
-                  "wday": 3,
+                  "wday": 0,
                   "year": 51,
                 },
                 "valves": Array [

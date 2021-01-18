@@ -1,39 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Action, select, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { concat, EMPTY, from, Observable, of, range } from 'rxjs';
-import { concatAll, debounceTime, filter, map, mergeMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { concat, EMPTY, from, Observable, of } from 'rxjs';
+import { debounceTime, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import {
   ActionSettingsChangeCompoteDaily,
   ActionSettingsChangeDose,
-  ActionSettingsChangeMixer, ActionSettingsChangePinAssignment,
+  ActionSettingsChangeMixer,
+  ActionSettingsChangePinAssignment,
   ActionSettingsChangeProgram,
   ActionSettingsChangePump,
   ActionSettingsChangeSchedule,
   ActionSettingsChangeTimer,
-  ActionSettingsSyncEnd,
   ActionSettingsUpdate,
-  selectorCompoteDaily,
-  selectorDose,
-  selectorMixer,
-  selectorPinDose,
-  selectorPinDoseMixer,
-  selectorPinFlowSensor,
-  selectorPinMixer,
-  selectorPinPump,
-  selectorProgram,
-  selectorPump,
-  selectorSchedule,
   selectorSettings,
-  selectorTimer,
   SettingsActionTypes,
+  SettingsState,
 } from './settings.reducer';
 import { LocalStorageService } from '../../services/storage/local-storage.service';
 import { DeviceRequestType } from '../../model/device-request-type';
-import { DeviceResponseType } from '../../model/device-response-type';
 import { deviceConfig } from '../../model/device-config';
 import { ConnectService } from '../../services/connect/connect.service';
 import { ActionConnectRequest } from '../connect/connect.reducer';
+import { DevicePinType } from '../../model/device-parts';
 
 @Injectable()
 export class SettingsEffects {
@@ -41,7 +30,6 @@ export class SettingsEffects {
     private readonly actions$: Actions<Action>,
     private readonly store: Store<any>,
     private readonly storage: LocalStorageService,
-    private readonly connectBt: ConnectService,
   ) {
   }
 
@@ -58,100 +46,97 @@ export class SettingsEffects {
       ;
   }
 
-  @Effect({ dispatch: false })
-  sync(): Observable<any> {
-    return this.actions$.pipe(ofType(SettingsActionTypes.SYNC))
+  @Effect({ dispatch: true })
+  saveSettings(): Observable<Action> {
+    return this.actions$.pipe(ofType(SettingsActionTypes.RESTORE))
       .pipe(withLatestFrom(this.store.pipe(select(selectorSettings))))
-      .pipe(filter(([action, state]) => !state.sync))
-      .pipe(switchMap(([action, state]) => concat(
-        this.syncItems(
-          selectorProgram,
-          DeviceRequestType.getProgram,
-          DeviceRequestType.setProgram,
-          DeviceResponseType.program,
-          deviceConfig.programCount,
-        ),
-        ...state.settings.compote.map((compote, id) =>
-          this.syncItems(
-            selectorCompoteDaily(id),
-            DeviceRequestType.getCompoteDaily,
-            DeviceRequestType.setCompoteDaily,
-            DeviceResponseType.compoteDaily,
-            deviceConfig.compoteDailyCount,
-            { id },
+      .pipe(switchMap(([action, { settings, pinAssignment }]: [any, SettingsState]): Observable<Action> =>
+        concat(
+          this.saveItems(
+            settings.program,
+            DeviceRequestType.setProgram,
+          ),
+          concat(...settings.compote.map((compote, index) =>
+            from(compote.daily.map((value, dailyIndex) =>
+              new ActionConnectRequest({
+                type: DeviceRequestType.setCompoteDaily,
+                payload: {
+                  index,
+                  dailyIndex,
+                  value,
+                },
+              }),
+            )),
           )),
-        this.syncItems(
-          selectorTimer,
-          DeviceRequestType.getTimer,
-          DeviceRequestType.setTimer,
-          DeviceResponseType.timer,
-          deviceConfig.timerCount,
-        ),
-        this.syncItems(
-          selectorSchedule,
-          DeviceRequestType.getSchedule,
-          DeviceRequestType.setSchedule,
-          DeviceResponseType.schedule,
-          deviceConfig.scheduleCount,
-        ),
-        this.syncItems(
-          selectorPump,
-          DeviceRequestType.getPump,
-          DeviceRequestType.setPump,
-          DeviceResponseType.pump,
-          deviceConfig.pumpCount,
-        ),
-        this.syncItems(
-          selectorMixer,
-          DeviceRequestType.getMixer,
-          DeviceRequestType.setMixer,
-          DeviceResponseType.mixer,
-          deviceConfig.mixerCount,
-        ),
-        this.syncItems(
-          selectorDose,
-          DeviceRequestType.getDose,
-          DeviceRequestType.setDose,
-          DeviceResponseType.dose,
-          deviceConfig.doseCount,
-        ),
-        this.syncItems(
-          selectorPinPump,
-          DeviceRequestType.getPinPump,
-          DeviceRequestType.setPinPump,
-          DeviceResponseType.pinPump,
-          deviceConfig.pumpCount,
-        ),
-        this.syncItems(
-          selectorPinFlowSensor,
-          DeviceRequestType.getPinFlowSensor,
-          DeviceRequestType.setPinFlowSensor,
-          DeviceResponseType.pinFlowSensor,
-          deviceConfig.pumpCount,
-        ),
-        this.syncItems(
-          selectorPinMixer,
-          DeviceRequestType.getPinMixer,
-          DeviceRequestType.setPinMixer,
-          DeviceResponseType.pinMixer,
-          deviceConfig.mixerCount,
-        ),
-        this.syncItems(
-          selectorPinDose,
-          DeviceRequestType.getPinDose,
-          DeviceRequestType.setPinDose,
-          DeviceResponseType.pinDose,
-          deviceConfig.doseCount,
-        ),
-        this.syncItems(
-          selectorPinDoseMixer,
-          DeviceRequestType.getPinDoseMixer,
-          DeviceRequestType.setPinDoseMixer,
-          DeviceResponseType.pinDoseMixer,
-          deviceConfig.doseCount,
-        ),
-        of(new ActionSettingsSyncEnd()),
-      )))
+          this.saveItems(
+            settings.dose,
+            DeviceRequestType.setDose,
+          ),
+          this.saveItems(
+            settings.timer,
+            DeviceRequestType.setTimer,
+          ),
+          this.saveItems(
+            settings.levelSensor,
+            DeviceRequestType.setLevelSensor,
+          ),
+          this.saveItems(
+            settings.mixer,
+            DeviceRequestType.setMixer,
+          ),
+          this.saveItems(
+            settings.pump,
+            DeviceRequestType.setPump,
+          ),
+          this.saveItems(
+            settings.schedule,
+            DeviceRequestType.setSchedule,
+          ),
+          this.savePins(
+            pinAssignment.beeper,
+            DevicePinType.beeper,
+          ),
+          this.savePins(
+            pinAssignment.button,
+            DevicePinType.button,
+          ),
+          this.savePins(
+            pinAssignment.display,
+            DevicePinType.display,
+          ),
+          this.savePins(
+            pinAssignment.dose,
+            DevicePinType.dose,
+          ),
+          this.savePins(
+            pinAssignment.doseMixer,
+            DevicePinType.doseMixer,
+          ),
+          this.savePins(
+            pinAssignment.flowSensor,
+            DevicePinType.flowSensor,
+          ),
+          this.savePins(
+            pinAssignment.levelSensor,
+            DevicePinType.levelSensor,
+          ),
+          this.savePins(
+            pinAssignment.mixer,
+            DevicePinType.mixer,
+          ),
+          this.savePins(
+            pinAssignment.pump,
+            DevicePinType.pump,
+          ),
+          this.savePins(
+            pinAssignment.rtc,
+            DevicePinType.rtc,
+          ),
+          this.savePins(
+            pinAssignment.valve,
+            DevicePinType.valve,
+          ),
+        )))
       ;
   }
 
@@ -275,7 +260,7 @@ export class SettingsEffects {
         of(new ActionConnectRequest({
           type: DeviceRequestType.setCompoteDaily,
           payload,
-        }))
+        })),
       ));
   }
 
@@ -292,9 +277,9 @@ export class SettingsEffects {
                     index,
                     dailyIndex,
                   },
-                }))
+                })),
             )
-        )))
+        ))),
       ])))
       ;
   }
@@ -360,8 +345,9 @@ export class SettingsEffects {
     return this.actions$.pipe(ofType<ActionSettingsChangePinAssignment>(SettingsActionTypes.CHANGE_PIN_ASSIGNMENT))
       .pipe(switchMap(({ payload }) =>
         of(new ActionConnectRequest({
-          type: this.keyToCmd(payload.key),
+          type: DeviceRequestType.setPin,
           payload: {
+            type: payload.type,
             index: payload.index,
             value: payload.value,
           },
@@ -373,113 +359,59 @@ export class SettingsEffects {
   loadPinAssignment(): Observable<Action> {
     return this.actions$.pipe(ofType(SettingsActionTypes.LOAD_PIN_ASSIGNMENT))
       .pipe(switchMap(() => from([
-        ...(new Array(deviceConfig.pumpCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinPump,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.valveCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinValve,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.doseCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinDose,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.doseMixerCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinDoseMixer,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.flowSensorCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinFlowSensor,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.levelSensorCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinLevelSensor,
-              payload: {
-                index,
-              },
-            }))
-        ),
-        ...(new Array(deviceConfig.mixerCount).fill(0)
-            .map((x, index) => new ActionConnectRequest({
-              type: DeviceRequestType.getPinMixer,
-              payload: {
-                index,
-              },
-            }))
-        ),
+        ...this.getPinRequest(deviceConfig.pumpCount, DevicePinType.pump),
+        ...this.getPinRequest(deviceConfig.valveCount, DevicePinType.valve),
+        ...this.getPinRequest(deviceConfig.doseCount, DevicePinType.dose),
+        ...this.getPinRequest(deviceConfig.doseMixerCount, DevicePinType.doseMixer),
+        ...this.getPinRequest(deviceConfig.flowSensorCount, DevicePinType.flowSensor),
+        ...this.getPinRequest(deviceConfig.levelSensorCount, DevicePinType.levelSensor),
+        ...this.getPinRequest(deviceConfig.mixerCount, DevicePinType.mixer),
+        ...this.getPinRequest(deviceConfig.beeperCount, DevicePinType.beeper),
       ])))
       ;
   }
 
-  private keyToCmd(key: string) {
-    switch(key) {
-      case 'pump': return DeviceRequestType.setPinPump;
-      case 'valve': return DeviceRequestType.setPinValve;
-      case 'flowSensor': return DeviceRequestType.setPinFlowSensor;
-      case 'levelSensor': return DeviceRequestType.setPinLevelSensor;
-      case 'mixer': return DeviceRequestType.setPinMixer;
-      case 'doseMixer': return DeviceRequestType.setPinDoseMixer;
-      case 'dose': return DeviceRequestType.setPinDose;
+  private getPinRequest(count: number, type: number): Action[] {
+    return new Array(count).fill(0)
+      .map((x, index) => new ActionConnectRequest({
+        type: DeviceRequestType.getPin,
+        payload: {
+          index,
+          type,
+        },
+      }));
+  }
+
+  private saveItems<T>(
+    items: T[],
+    type: DeviceRequestType,
+  ): Observable<Action> {
+    if (!items.length) {
+      return EMPTY;
     }
+    return from(items.map((value, index) => new ActionConnectRequest({
+      type,
+      payload: {
+        index,
+        value,
+      },
+    } as any)));
   }
 
-  private syncItems(
-    selector,
-    requestGet: DeviceRequestType,
-    requestSet: DeviceRequestType,
-    response: DeviceResponseType,
-    count: number,
-    payload = null,
-  ) {
-    return range(0, count)
-      .pipe(map(i => this.syncItem(selector, requestGet, requestSet, response, i, payload)))
-      .pipe(concatAll());
-  }
-
-  private syncItem(
-    selector,
-    requestGet: DeviceRequestType,
-    requestSet: DeviceRequestType,
-    response: DeviceResponseType,
-    index: number,
-    payload = null,
-  ) {
-    return from(this.connectBt.send({ type: requestGet, payload: { index } } as any))
-      .pipe(mergeMap(() => this.connectBt.response$))
-      .pipe(take(1))
-      .pipe(filter(r => r.type === response))
-      .pipe(withLatestFrom(this.store.pipe(select(selector(index)))))
-      .pipe(mergeMap(([deviceValue, value]) => {
-        if (JSON.stringify(deviceValue) === JSON.stringify(value)) {
-          return EMPTY;
-        }
-        return of(value);
-      }))
-      .pipe(mergeMap((value) =>
-        from(this.connectBt.send({ type: requestSet, payload: { index, value, ...payload } } as any)),
-      ))
-      ;
+  private savePins(
+    items: number[],
+    type: DevicePinType,
+  ): Observable<Action> {
+    if (!items.length) {
+      return EMPTY;
+    }
+    return from(items.map((value, index) => new ActionConnectRequest({
+      type: DeviceRequestType.setPin,
+      payload: {
+        type,
+        index,
+        value,
+      },
+    })));
   }
 }

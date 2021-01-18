@@ -126,45 +126,9 @@ export class ConnectEffects {
               dailyIndex: payload.payload.dailyIndex,
               value: payload.payload.value,
             }));
-          case DeviceResponseType.pinPump:
+          case DeviceResponseType.pin:
             return of(new ActionSettingsUpdatePinAssignment({
-              key: 'pump',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinValve:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'valve',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinFlowSensor:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'flowSensor',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinLevelSensor:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'levelSensor',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinDose:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'dose',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinMixer:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'mixer',
-              index: payload.payload.index,
-              value: payload.payload.value,
-            }));
-          case DeviceResponseType.pinDoseMixer:
-            return of(new ActionSettingsUpdatePinAssignment({
-              key: 'doseMixer',
+              type: payload.payload.type,
               index: payload.payload.index,
               value: payload.payload.value,
             }));

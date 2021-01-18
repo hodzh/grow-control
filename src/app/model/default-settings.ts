@@ -107,7 +107,8 @@ export function defaultDoseSettings(): Dose {
 
 export function defaultLevelSensorSettings(): LevelSensor {
   return {
-    beepSeconds: 1,
+    enable: 0,
+    seconds: 1,
   };
 }
 
@@ -140,6 +141,7 @@ export function defaultPinAssignment(): PinAssignment {
     rtc: [],
     display: [],
     button: [],
+    beeper: [],
   };
 }
 
@@ -152,6 +154,6 @@ export function defaultNames() {
     pump: ['In', 'Out'],
     mixer: ['Compote', 'Wash'],
     dose: ['Grow', 'Bloom', '', ''],
-    levelSensor: ['Min', 'Max'],
+    levelSensor: ['Low', 'High'],
   };
 }

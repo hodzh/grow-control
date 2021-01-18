@@ -12,9 +12,11 @@ import {
 } from 'typescript';
 import { Options, format } from 'prettier';
 import { DeviceIOMeta } from '../../app/model/device-io';
-import { deviceRequestMeta, deviceResponseMeta, structMeta } from '../../app/model/device-io-meta';
 import { DeviceResponseType } from '../../app/model/device-response-type';
 import { DeviceRequestType } from '../../app/model/device-request-type';
+import { structMeta } from '../../app/services/connect/device-struct-meta';
+import { deviceResponseMeta } from '../../app/services/connect/device-response-meta';
+import { deviceRequestMeta } from '../../app/services/connect/device-request-meta';
 
 const dir = join(__dirname, '..', '..', '..');
 const outDir = join(dir, 'src', 'app', 'auto');

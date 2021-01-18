@@ -52,13 +52,14 @@ public:
     void doseLoop(void);
     void doseStop(uint8_t errorCode);
 
-    void mixStart(uint8_t mode, CmdStopCallback scb);
+    void mixStart(uint8_t washing, CmdStopCallback scb);
     void mixLoop(void);
 
     void irrigateStart(
         uint8_t programId,
         uint8_t compoteId,
         uint8_t compoteDailyId,
+        uint8_t washing,
         uint8_t mode,
         CmdStopCallback scb
     );
@@ -77,11 +78,12 @@ public:
 
     void timerStart(unsigned long ms, CmdStopCallback scb);
     void timerLoop(void);
-    void timerStop(uint8_t errorCode);
 
     void checkState(void);
     // check program timers
     void checkTimers(void);
+    // check level sensors
+    void checkLevels(void);
     // check schedules
     void checkSchedules(void);
     // switch off each pump
@@ -130,6 +132,8 @@ public:
     );
     void setNextValve(void);
     void resetStatus(void);
+    uint8_t bitCount(const uint8_t* bytes, uint8_t length);
+    void resetErrorValves();
 
     void handleCommand(void);
     void cmdGetValve(void);
@@ -152,20 +156,10 @@ public:
     void cmdSetMixer(void);
     void cmdGetDose(void);
     void cmdSetDose(void);
-    void cmdGetPinPump(void);
-    void cmdSetPinPump(void);
-    void cmdGetPinFlowSensor(void);
-    void cmdSetPinFlowSensor(void);
-    void cmdGetPinLevelSensor(void);
-    void cmdSetPinLevelSensor(void);
-    void cmdGetPinMixer(void);
-    void cmdSetPinMixer(void);
-    void cmdGetPinDose(void);
-    void cmdSetPinDose(void);
-    void cmdGetPinDoseMixer(void);
-    void cmdSetPinDoseMixer(void);
-    void cmdGetPinValve(void);
-    void cmdSetPinValve(void);
+    void cmdGetLevelSensor(void);
+    void cmdSetLevelSensor(void);
+    void cmdGetPin(void);
+    void cmdSetPin(void);
     void cmdSetTime(void);
     void cmdGetTime(void);
     void cmdGetTemp(void);
@@ -181,10 +175,13 @@ public:
 
     ResponseStatus _status;
     uint8_t _errorCode;
+    uint8_t _errorValves[VALVE_COUNT / 8];
     uint8_t _stack[MAX_STATE_STACK];
     uint8_t _stackCount;
     SerialControl _control;
     GrowControlMenu _menu;
+    uint8_t _lowLevelSensorState;
+    uint8_t _highLevelSensorState;
 #if RTC_COUNT == 1
     ProgramTimerControl _timer;
     ScheduleControl _schedule;

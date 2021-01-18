@@ -14,7 +14,7 @@
           <app-pin-select
             [pins]="pinPumps$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('pump', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.pump, $event.index, $event.value)"
             title="Pump"
           ></app-pin-select>
         </ng-template>
@@ -32,7 +32,7 @@
           <app-pin-select
             [pins]="pinFlowSensors$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('flowSensor', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.flowSensor, $event.index, $event.value)"
             title="Flow Sensor"
           ></app-pin-select>
         </ng-template>
@@ -50,7 +50,7 @@
           <app-pin-select
             [pins]="pinMixers$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('mixer', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.mixer, $event.index, $event.value)"
             title="Mixer"
           ></app-pin-select>
         </ng-template>
@@ -68,7 +68,7 @@
           <app-pin-select
             [pins]="pinDoses$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('dose', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.dose, $event.index, $event.value)"
             title="Dose"
           ></app-pin-select>
         </ng-template>
@@ -86,7 +86,7 @@
           <app-pin-select
             [pins]="pinDoseMixers$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('doseMixer', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.doseMixer, $event.index, $event.value)"
             title="Dose Mixer"
           ></app-pin-select>
         </ng-template>
@@ -104,7 +104,7 @@
           <app-pin-select
             [pins]="pinValves$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('valve', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.valve, $event.index, $event.value)"
             title="Valve"
           ></app-pin-select>
         </ng-template>
@@ -122,8 +122,26 @@
           <app-pin-select
             [pins]="pinLevelSensors$ | async"
             [allPins]="pins"
-            (pinChange)="onChange('levelSensor', $event.index, $event.value)"
+            (pinChange)="onChange(devicePinType.levelSensor, $event.index, $event.value)"
             title="Level Sensor"
+          ></app-pin-select>
+        </ng-template>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Beeper
+          </mat-panel-title>
+          <mat-panel-description>
+            Beeper pin assignment
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-pin-select
+            [pins]="pinBeeper$ | async"
+            [allPins]="pins"
+            (pinChange)="onChange(devicePinType.beeper, $event.index, $event.value)"
+            title="Beeper"
           ></app-pin-select>
         </ng-template>
       </mat-expansion-panel>

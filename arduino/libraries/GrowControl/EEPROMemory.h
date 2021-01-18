@@ -34,6 +34,8 @@ public:
     static void getMixer(uint8_t id, struct Mixer& value);
     static void setDose(uint8_t id, struct Dose& value);
     static void getDose(uint8_t id, struct Dose& value);
+	static void setLevelSensor(uint8_t id, struct LevelSensor& value);
+	static void getLevelSensor(uint8_t id, struct LevelSensor& value);
 
     static uint8_t getPinPump(uint8_t id);
     static void setPinPump(uint8_t id, uint8_t pin);
@@ -49,6 +51,8 @@ public:
     static void setPinDoseMixer(uint8_t id, uint8_t pin);
     static uint8_t getPinValve(uint8_t id);
     static void setPinValve(uint8_t id, uint8_t pin);
+	static uint8_t getPinBeeper(uint8_t id);
+	static void setPinBeeper(uint8_t id, uint8_t pin);
 
     static void resetAll();
     static void resetCompote();
@@ -58,6 +62,7 @@ public:
     static void resetPump();
     static void resetMixer();
     static void resetDose();
+    static void resetLevelSensor();
     static void resetPinAssignment();
 
     static void trace();
@@ -69,5 +74,6 @@ public:
     static void tracePump();
     static void traceMixer();
     static void traceDose();
+    static void traceLevelSensor();
     static void tracePinAssignment();
 };

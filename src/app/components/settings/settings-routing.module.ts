@@ -9,6 +9,7 @@ import {ScheduleListComponent} from './schedule-list/schedule-list.component';
 import {TimerListComponent} from './timer-list/timer-list.component';
 import {MixerListComponent} from './mixer-list/mixer-list.component';
 import {PinAssignmentComponent} from './pin-assignment/pin-assignment.component';
+import { BackupComponent } from './backup/backup.component';
 
 const routes: Routes = [
   {
@@ -84,6 +85,14 @@ const routes: Routes = [
         component: PinAssignmentComponent,
         data: {
           title: 'Pin Assignment',
+          actions: ['back', 'sync'],
+        },
+      },
+      {
+        path: 'backup',
+        component: BackupComponent,
+        data: {
+          title: 'Backup',
           actions: ['back', 'sync'],
         },
       },

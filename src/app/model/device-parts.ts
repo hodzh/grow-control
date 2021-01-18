@@ -1,8 +1,7 @@
 /**
  * Devices parts
  */
-
-export enum DevicePartType {
+export enum DevicePinType {
   pump,
   valve,
   mixer,
@@ -13,9 +12,10 @@ export enum DevicePartType {
   rtc,
   display,
   button,
+  beeper,
 };
 
-export const devicePartTypeName: Record<keyof typeof DevicePartType, string> = {
+export const devicePinTypeName: Record<keyof typeof DevicePinType, string> = {
   pump: 'Pump',
   valve: 'Valve',
   mixer: 'Mixer',
@@ -26,6 +26,7 @@ export const devicePartTypeName: Record<keyof typeof DevicePartType, string> = {
   rtc: 'RTC',
   display: 'Display',
   button: 'Button',
+  beeper: 'Beeper',
 };
 
-export type PinAssignment = Record<keyof typeof DevicePartType, number[] | null>;
+export type PinAssignment = Record<keyof typeof DevicePinType, number[] | null>;

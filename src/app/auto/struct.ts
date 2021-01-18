@@ -49,7 +49,8 @@ export interface Pump {
   rate: number;
 }
 export interface LevelSensor {
-  beepSeconds: number;
+  enable: number;
+  seconds: number;
 }
 export interface Mixer {
   seconds: number;
@@ -101,4 +102,5 @@ export interface PinAssignment {
   dose: number[];
   doseMixer: number[];
   valve: number[];
+  beeper: number[];
 }

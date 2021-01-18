@@ -104,6 +104,13 @@ Dose getDefaultDose() {
     return dose;
 }
 
+LevelSensor getDefaultLevelSensor() {
+    LevelSensor levelSensor;
+    levelSensor.enable = 0;
+    levelSensor.seconds = 5;
+    return levelSensor;
+}
+
 void getDefaultPinAssignment(PinAssignment& pinAssignment) {
     uint8_t pin = 2;
     for(int i = 0; i < PUMP_COUNT; ++i) {
@@ -126,6 +133,9 @@ void getDefaultPinAssignment(PinAssignment& pinAssignment) {
     }
     for(int i = 0; i < VALVE_COUNT; ++i) {
         pinAssignment.valve[i] = pin++;
+    }
+    for(int i = 0; i < BEEPER_COUNT; ++i) {
+        pinAssignment.beeper[i] = pin++;
     }
     return pinAssignment;
 }
@@ -216,6 +226,14 @@ void EEPROMemory::getDose(uint8_t id, struct Dose& value) {
     EEPROM_get(offsetof(EEPROMLayout, settings) + offsetof(Settings, dose) + id * sizeof(Dose), value);
 }
 
+void EEPROMemory::setLevelSensor(uint8_t id, struct LevelSensor& value) {
+    EEPROM_put(offsetof(EEPROMLayout, settings) + offsetof(Settings, levelSensor) + id * sizeof(LevelSensor), value);
+}
+
+void EEPROMemory::getLevelSensor(uint8_t id, struct LevelSensor& value) {
+    EEPROM_get(offsetof(EEPROMLayout, settings) + offsetof(Settings, levelSensor) + id * sizeof(LevelSensor), value);
+}
+
 uint8_t EEPROMemory::getPinPump(uint8_t id) {
     return EEPROM.read(offsetof(EEPROMLayout, pinAssignment) + offsetof(PinAssignment, pump) + id);
 }
@@ -270,6 +288,14 @@ uint8_t EEPROMemory::getPinValve(uint8_t id) {
 
 void EEPROMemory::setPinValve(uint8_t id, uint8_t pin) {
     EEPROM_put(offsetof(EEPROMLayout, pinAssignment) + offsetof(PinAssignment, valve) + id, pin);
+}
+
+uint8_t EEPROMemory::getPinBeeper(uint8_t id) {
+    return EEPROM.read(offsetof(EEPROMLayout, pinAssignment) + offsetof(PinAssignment, beeper) + id);
+}
+
+void EEPROMemory::setPinBeeper(uint8_t id, uint8_t pin) {
+    EEPROM_put(offsetof(EEPROMLayout, pinAssignment) + offsetof(PinAssignment, beeper) + id, pin);
 }
 
 void EEPROMemory::resetCompote() {
@@ -328,6 +354,13 @@ void EEPROMemory::resetDose() {
     }
 }
 
+void EEPROMemory::resetLevelSensor() {
+    LevelSensor value = getDefaultLevelSensor();
+    for (uint8_t i = 0; i < LEVEL_SENSOR_COUNT; ++i) {
+        setLevelSensor(i, value);
+    }
+}
+
 void EEPROMemory::resetPinAssignment() {
     PinAssignment value;
     getDefaultPinAssignment(value);
@@ -342,6 +375,7 @@ void EEPROMemory::resetAll() {
     resetPump();
     resetMixer();
     resetDose();
+    resetLevelSensor();
     resetPinAssignment();
     const uint16_t version = EEPROM_VERSION;
     EEPROM.put(0, version);
@@ -355,6 +389,7 @@ void EEPROMemory::trace() {
     tracePump();
     traceMixer();
     traceDose();
+    traceLevelSensor();
     tracePinAssignment();
 }
 
@@ -470,6 +505,21 @@ void EEPROMemory::traceDose() {
         SERIAL_WRITELN(i);
         SERIAL_PWRITE(" rate ");
         SERIAL_WRITELN(value.rate);
+        SERIAL_PWRITE(" seconds ");
+        SERIAL_WRITELN(value.seconds);
+    }
+}
+
+void EEPROMemory::traceLevelSensor() {
+    LevelSensor value;
+    for (uint8_t i = 0; i < LEVEL_SENSOR_COUNT; ++i) {
+        getLevelSensor(i, value);
+        SERIAL_PWRITE("level sensor ");
+        SERIAL_WRITELN(i);
+        SERIAL_PWRITE(" enable ");
+        SERIAL_WRITELN(value.enable);
+        SERIAL_PWRITE(" seconds ");
+        SERIAL_WRITELN(value.seconds);
     }
 }
 
@@ -513,6 +563,12 @@ void EEPROMemory::tracePinAssignment() {
     SERIAL_PWRITELN("valve pins");
     for (uint8_t i = 0; i < VALVE_COUNT; ++i) {
         uint8_t pin = getPinValve(i);
+        SERIAL_PWRITE("  ");
+        SERIAL_WRITELN(pin);
+    }
+    SERIAL_PWRITELN("beeper pins");
+    for (uint8_t i = 0; i < BEEPER_COUNT; ++i) {
+        uint8_t pin = getPinBeeper(i);
         SERIAL_PWRITE("  ");
         SERIAL_WRITELN(pin);
     }
