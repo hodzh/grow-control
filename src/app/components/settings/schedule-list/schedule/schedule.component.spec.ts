@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ScheduleComponent} from './schedule.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Schedule} from '../../../../auto/struct';
@@ -21,7 +21,7 @@ describe('ScheduleComponent', () => {
     },
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ScheduleComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

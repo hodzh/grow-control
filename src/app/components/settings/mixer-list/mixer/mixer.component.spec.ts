@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MixerComponent} from './mixer.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Mixer} from '../../../../auto/struct';
@@ -13,7 +13,7 @@ describe('MixerComponent', () => {
     pwm: 0,
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MixerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

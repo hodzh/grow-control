@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ProgramComponent} from './program.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Program} from '../../../../auto/struct';
@@ -22,7 +22,7 @@ describe('ProgramComponent', () => {
   };
   const compotes = [];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatDatepickerModule, MatNativeDateModule],
       declarations: [ProgramComponent, BitsPipe, DateDayPipe],

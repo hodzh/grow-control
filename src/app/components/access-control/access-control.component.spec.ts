@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {AccessControlComponent} from './access-control.component';
 import {provideMockStore} from '@ngrx/store/testing';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -8,7 +8,7 @@ describe('AccessControlComponent', () => {
   let component: AccessControlComponent;
   let fixture: ComponentFixture<AccessControlComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ScrollingModule],
       declarations: [AccessControlComponent],

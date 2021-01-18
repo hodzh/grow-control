@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {LevelSensorComponent} from './level-sensor.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {LevelSensor} from '../../../../auto/struct';
@@ -11,7 +11,7 @@ describe('LevelSensorComponent', () => {
     seconds: 0,
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LevelSensorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

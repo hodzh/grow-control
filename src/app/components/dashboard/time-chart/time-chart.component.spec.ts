@@ -1,11 +1,11 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TimeChartComponent} from './time-chart.component';
 
 describe('TimeChartComponent', () => {
   let component: TimeChartComponent;
   let fixture: ComponentFixture<TimeChartComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TimeChartComponent],
     })

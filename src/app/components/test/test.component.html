@@ -2,6 +2,19 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
+        Pumps
+      </mat-panel-title>
+      <mat-panel-description>
+        Pumps state
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-test-pump-list></app-test-pump-list>
+    </ng-template>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
         Valves
       </mat-panel-title>
       <mat-panel-description>
@@ -9,8 +22,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <app-valve-list
-      ></app-valve-list>
+      <app-test-valve-list></app-test-valve-list>
     </ng-template>
   </mat-expansion-panel>
 </mat-accordion>

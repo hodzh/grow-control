@@ -1,6 +1,6 @@
 import {
   ActionSettingsUpdate,
-  initialSettingsState,
+  getInitialSettingsState,
   settingsReducer,
 } from './settings.reducer';
 import { advanceTo } from 'jest-date-mock';
@@ -10,7 +10,8 @@ describe('SettingsReducer', () => {
   describe('ActionSettingsUpdate', () => {
     it('should update', () => {
       advanceTo(new Date(2021, 1, 2, 3, 4, 5)); // reset to date time.
-      const action = new ActionSettingsUpdate(initialSettingsState);
+      console.log(new Date());
+      const action = new ActionSettingsUpdate(getInitialSettingsState());
       const state = settingsReducer(null, action);
       expect(state).toMatchInlineSnapshot(`
         Object {
@@ -519,9 +520,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 17,
-                  "month": 0,
-                  "wday": 0,
+                  "day": 2,
+                  "month": 1,
+                  "wday": 2,
                   "year": 51,
                 },
                 "valves": Array [
@@ -533,9 +534,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 17,
-                  "month": 0,
-                  "wday": 0,
+                  "day": 2,
+                  "month": 1,
+                  "wday": 2,
                   "year": 51,
                 },
                 "valves": Array [
@@ -547,9 +548,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 17,
-                  "month": 0,
-                  "wday": 0,
+                  "day": 2,
+                  "month": 1,
+                  "wday": 2,
                   "year": 51,
                 },
                 "valves": Array [
@@ -561,9 +562,9 @@ describe('SettingsReducer', () => {
               Object {
                 "compote": 0,
                 "start": Object {
-                  "day": 17,
-                  "month": 0,
-                  "wday": 0,
+                  "day": 2,
+                  "month": 1,
+                  "wday": 2,
                   "year": 51,
                 },
                 "valves": Array [

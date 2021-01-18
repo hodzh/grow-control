@@ -5,8 +5,9 @@ import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
 import { TestComponent } from './test.component';
 import { TestRoutingModule } from './test-routing.module';
-import { ValveListModule } from './valve-list/valve-list.module';
+import { TestValveListModule } from './valve-list/test-valve-list.module';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { TestPumpListModule } from './pump-list/test-pump-list.module';
 
 @NgModule({
   declarations: [TestComponent],
@@ -14,9 +15,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
   imports: [
     CommonModule,
     MatExpansionModule,
-    TestRoutingModule,
     PageModule,
-    ValveListModule,
+    TestRoutingModule,
+    TestValveListModule,
+    TestPumpListModule,
   ],
 })
 export class TestModule {

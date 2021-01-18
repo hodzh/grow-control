@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {SelectBtDeviceComponent} from './select-bt-device.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ConnectService} from '../../../services/connect/connect.service';
@@ -9,7 +9,7 @@ describe('SelectBtDeviceComponent', () => {
   let component: SelectBtDeviceComponent;
   let fixture: ComponentFixture<SelectBtDeviceComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatListModule],
       declarations: [SelectBtDeviceComponent],

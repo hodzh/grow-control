@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EpisodeComponent } from './episode.component';
 import {DbService} from '../../../services/storage/db.service';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -8,7 +8,7 @@ describe('EpisodeComponent', () => {
   let fixture: ComponentFixture<EpisodeComponent>;
   let db: DbService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EpisodeComponent ],
       providers: [

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {PinSelectComponent} from './pin-select.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
@@ -6,7 +6,7 @@ describe('PinSelectComponent', () => {
   let component: PinSelectComponent;
   let fixture: ComponentFixture<PinSelectComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PinSelectComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -5,12 +5,12 @@ import { DeviceRequestType } from '../../../model/device-request-type';
 import { deviceConfig } from '../../../model/device-config';
 
 @Component({
-  selector: 'app-valve-list',
-  templateUrl: './valve-list.component.html',
-  styleUrls: ['./valve-list.component.scss'],
+  selector: 'app-test-valve-list',
+  templateUrl: './test-valve-list.component.html',
+  styleUrls: ['./test-valve-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ValveListComponent {
+export class TestValveListComponent {
   valveCount = deviceConfig.valveCount;
   constructor(
     private readonly store: Store<any>,

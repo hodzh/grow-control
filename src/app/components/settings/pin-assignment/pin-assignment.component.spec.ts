@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {PinAssignmentComponent} from './pin-assignment.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -9,7 +9,7 @@ describe('PinAssignmentComponent', () => {
   let component: PinAssignmentComponent;
   let fixture: ComponentFixture<PinAssignmentComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PinAssignmentComponent, TimesPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

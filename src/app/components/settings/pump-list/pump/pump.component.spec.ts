@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {PumpComponent} from './pump.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Pump} from '../../../../auto/struct';
@@ -14,7 +14,7 @@ describe('PumpComponent', () => {
     rate: 5880,
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PumpComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

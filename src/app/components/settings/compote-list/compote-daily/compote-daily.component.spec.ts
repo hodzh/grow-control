@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompoteDailyComponent } from './compote-daily.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {defaultCompoteDaily} from '../../../../model/default-settings';
@@ -7,7 +7,7 @@ describe('CompoteDailyComponent', () => {
   let component: CompoteDailyComponent;
   let fixture: ComponentFixture<CompoteDailyComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CompoteDailyComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,24 +1,25 @@
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ScheduleListComponent} from './schedule-list.component';
+import {TestPumpListComponent} from './test-pump-list.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
+import { TimesPipe } from '../../../pipes/times.pipe';
 
-describe('ScheduleListComponent', () => {
-  let component: ScheduleListComponent;
-  let fixture: ComponentFixture<ScheduleListComponent>;
+describe('TestPumpListComponent', () => {
+  let component: TestPumpListComponent;
+  let fixture: ComponentFixture<TestPumpListComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ScheduleListComponent],
+      declarations: [TestPumpListComponent, TimesPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMockStore()],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ScheduleListComponent);
+    fixture = TestBed.createComponent(TestPumpListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

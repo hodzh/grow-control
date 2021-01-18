@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChooseDialogComponent } from './choose-dialog.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ConnectService } from '../../services/connect/connect.service';
@@ -10,7 +10,7 @@ describe('ChooseDialogComponent', () => {
   let component: ChooseDialogComponent;
   let fixture: ComponentFixture<ChooseDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatListModule],
       declarations: [ChooseDialogComponent, TimesPipe],

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CamshotSliderComponent } from './camshot-slider.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {DbService} from '../../../services/storage/db.service';
@@ -9,7 +9,7 @@ describe('CamshotSliderComponent', () => {
   let fixture: ComponentFixture<CamshotSliderComponent>;
   let dbService: DbService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CamshotSliderComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DashboardComponent} from './dashboard.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {DateTimePipe} from '../../pipes/date-time.pipe';
@@ -12,7 +12,7 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let actions;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent, DateTimePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

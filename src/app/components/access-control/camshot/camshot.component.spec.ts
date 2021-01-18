@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CamshotComponent } from './camshot.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {DbService} from '../../../services/storage/db.service';
@@ -8,7 +8,7 @@ describe('CamshotComponent', () => {
   let component: CamshotComponent;
   let fixture: ComponentFixture<CamshotComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CamshotComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -556,13 +556,15 @@ export interface SettingsState {
   backups: SettingsBackup[];
 }
 
-export const initialSettingsState: SettingsState = {
-  settings: defaultSettings(),
-  pinAssignment: defaultPinAssignment(),
-  names: defaultNames(),
-  sync: false,
-  backups: [],
-};
+export function getInitialSettingsState(): SettingsState {
+  return {
+    settings: defaultSettings(),
+    pinAssignment: defaultPinAssignment(),
+    names: defaultNames(),
+    sync: false,
+    backups: [],
+  };
+}
 
 export const selectorSettings = state => state.settings as SettingsState;
 export const selectorDeviceSettings = state => (state.settings as SettingsState).settings;
@@ -604,7 +606,7 @@ export const selectorSettingsSync = state => (state.settings as SettingsState).s
 export const selectorSettingsBackups = state => (state.settings as SettingsState).backups;
 
 export function settingsReducer(
-  state: SettingsState = initialSettingsState,
+  state: SettingsState = getInitialSettingsState(),
   action: SettingsActions,
 ): SettingsState {
   switch (action.type) {

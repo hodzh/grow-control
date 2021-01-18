@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DevAccessControlComponent} from './dev-access-control.component';
 import {AccessControlService} from '../../../services/access-control/access-control.service';
 import {Subject} from 'rxjs';
@@ -7,7 +7,7 @@ describe('DevAccessControlComponent', () => {
   let component: DevAccessControlComponent;
   let fixture: ComponentFixture<DevAccessControlComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DevAccessControlComponent],
       providers: [

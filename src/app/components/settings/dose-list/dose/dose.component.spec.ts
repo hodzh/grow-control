@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DoseComponent} from './dose.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Dose} from '../../../../auto/struct';
@@ -13,7 +13,7 @@ describe('DoseComponent', () => {
     pwm: 0,
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DoseComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

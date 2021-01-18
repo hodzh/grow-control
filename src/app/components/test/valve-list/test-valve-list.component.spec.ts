@@ -1,25 +1,25 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ValveListComponent} from './valve-list.component';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {TestValveListComponent} from './test-valve-list.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import { TimesPipe } from '../../../pipes/times.pipe';
 
-describe('ValveListComponent', () => {
-  let component: ValveListComponent;
-  let fixture: ComponentFixture<ValveListComponent>;
+describe('TestValveListComponent', () => {
+  let component: TestValveListComponent;
+  let fixture: ComponentFixture<TestValveListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ValveListComponent, TimesPipe],
+      declarations: [TestValveListComponent, TimesPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMockStore()],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ValveListComponent);
+    fixture = TestBed.createComponent(TestValveListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

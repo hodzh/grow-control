@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {CompoteComponent} from './compote.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Compote} from '../../../../auto/struct';
@@ -10,7 +10,7 @@ describe('CompoteComponent', () => {
     daily: [],
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CompoteComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

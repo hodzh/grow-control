@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TimerComponent} from './timer.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Timer} from '../../../../auto/struct';
@@ -17,7 +17,7 @@ describe('TimerComponent', () => {
     },
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TimerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

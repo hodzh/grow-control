@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CamshotsComponent } from './camshots.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ScrollingModule} from '@angular/cdk/scrolling';
@@ -7,7 +7,7 @@ describe('CamshotsComponent', () => {
   let component: CamshotsComponent;
   let fixture: ComponentFixture<CamshotsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ScrollingModule],
       declarations: [ CamshotsComponent ],
