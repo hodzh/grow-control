@@ -1,0 +1,8 @@
+<div *ngFor="let dose of doseCount | times; trackBy: trackByIndex" class="row">
+  <mat-slide-toggle
+    class="d-block col-6"
+    (change)="onChange(dose, +$event.checked)"
+  >
+    #{{ dose + 1 }}
+  </mat-slide-toggle>
+</div>

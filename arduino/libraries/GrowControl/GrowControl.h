@@ -142,6 +142,12 @@ public:
     void cmdSetPumpState(void);
     void cmdGetValveState(void);
     void cmdSetValveState(void);
+    void cmdGetMixerState(void);
+    void cmdSetMixerState(void);
+    void cmdGetDoseState(void);
+    void cmdSetDoseState(void);
+    void cmdGetDoseMixerState(void);
+    void cmdSetDoseMixerState(void);
     void cmdGetProgram(void);
     void cmdSetProgram(void);
     void cmdGetCompoteDaily(void);

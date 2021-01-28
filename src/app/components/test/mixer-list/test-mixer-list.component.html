@@ -1,0 +1,8 @@
+<div *ngFor="let mixer of mixerCount | times; trackBy: trackByIndex" class="row">
+  <mat-slide-toggle
+    class="d-block col-6"
+    (change)="onChange(mixer, +$event.checked)"
+  >
+    #{{ mixer + 1 }}
+  </mat-slide-toggle>
+</div>
