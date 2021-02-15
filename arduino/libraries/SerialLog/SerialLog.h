@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 // Log out activity using serial port
-#define USE_SERIAL_LOG
+//#define USE_SERIAL_LOG
 #define LOG_STRING_MAX_SIZE 32
 
 class SerialLog {

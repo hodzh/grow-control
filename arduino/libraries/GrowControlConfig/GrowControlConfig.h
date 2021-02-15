@@ -9,3 +9,4 @@
 #define MAX_STATE_STACK 200
 // #define TEST_EMU
 // #define TRACE_SERIAL_CONTROL
+#define VALVES_SERIAL

@@ -3,11 +3,13 @@
 #include <Arduino.h>
 #include "GrowControlConfig.h"
 #include "SerialControl.h"
-#include "GrowControlMenu.h"
 #include "ScheduleControl.h"
 #include "ProgramTimerControl.h"
 #include "GrowControlState.h"
 #include "PumpState.h"
+#ifdef VALVES_SERIAL
+#include "ValvesSerialControl.h";
+#endif
 
 // asynchronous callback of non blocking operation
 class GrowControl;
@@ -185,11 +187,13 @@ public:
     uint8_t _stack[MAX_STATE_STACK];
     uint8_t _stackCount;
     SerialControl _control;
-    GrowControlMenu _menu;
     uint8_t _lowLevelSensorState;
     uint8_t _highLevelSensorState;
 #if RTC_COUNT == 1
     ProgramTimerControl _timer;
     ScheduleControl _schedule;
+#endif
+#ifdef VALVES_SERIAL
+    ValvesSerialControl valvesSerial;
 #endif
 };

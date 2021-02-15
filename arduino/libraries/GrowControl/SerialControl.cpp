@@ -5,9 +5,9 @@
 #include "TimeUtil.h"
 #include "DS3232RTC.h"
 
-#define SERIAL_CONTROL Serial3
-//#define SERIAL_CONTROL_BAUD_RATE 9600
-#define SERIAL_CONTROL_BAUD_RATE 38400
+#define SERIAL_CONTROL Serial
+#define SERIAL_CONTROL_BAUD_RATE 9600
+// #define SERIAL_CONTROL_BAUD_RATE 38400
 #define NO_CMD 0xFFFF
 
 SerialControl::SerialControl() {

@@ -41,9 +41,14 @@ void GrowControl::setup(void) {
     for (uint8_t i = 0; i < PUMP_COUNT; i++) {
         pinMode(EEPROMemory::getPinPump(i), OUTPUT);
     }
+#ifdef VALVES_SERIAL
+    valvesSerial.setup();
+#else
     for (uint8_t i = 0; i < VALVE_COUNT; i++) {
         pinMode(EEPROMemory::getPinValve(i), OUTPUT);
     }
+#endif
+
     for (uint8_t i = 0; i < MIXER_COUNT; i++) {
         pinMode(EEPROMemory::getPinMixer(i), OUTPUT);
     }
@@ -536,8 +541,12 @@ void GrowControl::setStatePump(uint8_t id, uint8_t value) {
 }
 
 uint8_t GrowControl::getStateValve(uint8_t id) {
+#ifdef VALVES_SERIAL
+    return valvesSerial.valves[id/8] & (1 << (id % 8));
+#else
     uint8_t pin = EEPROMemory::getPinValve(id);
     return digitalRead(pin);
+#endif
 }
 
 void GrowControl::setStateValve(uint8_t id, uint8_t value) {
@@ -545,8 +554,16 @@ void GrowControl::setStateValve(uint8_t id, uint8_t value) {
     SERIAL_WRITE(id);
     SERIAL_PWRITE(" ");
     SERIAL_WRITELN(value);
+#ifdef VALVES_SERIAL
+    valvesSerial.valves[id/8] = value ? valvesSerial.valves[id/8] | (1 << (id % 8)) :
+     valvesSerial.valves[id/8] & ~(1 << (id % 8));
+    uint8_t pin = EEPROMemory::getPinValve(id);
+    valvesSerial.serial.write(value ? 128 + pin : pin);
+#else
     uint8_t pin = EEPROMemory::getPinValve(id);
     digitalWrite(pin, value);
+#endif
+
 }
 
 uint8_t GrowControl::getStateMixer(uint8_t id) {
